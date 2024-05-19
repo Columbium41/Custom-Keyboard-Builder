@@ -1,0 +1,7 @@
+.border-borders-between-columns > * {
+    border-left: 1px solid #404040;
+}
+
+.border-borders-between-columns > *:last-of-type {
+    border-right: 1px solid #404040;
+}
