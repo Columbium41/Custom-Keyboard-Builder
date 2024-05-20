@@ -1,8 +1,9 @@
 import Image from "next/image"
 import Link from "next/link"
 import Button from "../Button/Button"
-import LazySVG from "../LazySVG/LazySVG"
+import LazySVG from "../LazySVG/LazySVG";
 import "./Header.css"
+import HeaderSearchInput from "../HeaderSearchInput/HeaderSearchInput";
 
 export default function Header() {
     const navigationLinks = [
@@ -55,8 +56,12 @@ export default function Header() {
                 </div>
 
                 {/* Search */}
-                <div className="w-1/2">
-
+                <div className="w-1/2 flex justify-end text-neutral-400 transition-colors duration-150">
+                    <HeaderSearchInput />
+                    { /* TODO: implement backend for search feature */ }
+                    <div className="w-12 h-3/4 my-auto">
+                        <LazySVG name="search" className="w-full h-full stroke-current hover:text-orange-300 cursor-pointer" />
+                    </div>
                 </div>
             </nav>
         </header>
