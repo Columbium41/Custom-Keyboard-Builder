@@ -5,8 +5,8 @@
  width="256.000000pt" height="256.000000pt" viewBox="0 0 256.000000 256.000000"
  preserveAspectRatio="xMidYMid meet">
 
-<g transform="translate(0.000000,256.000000) scale(0.100000,-0.100000)"
-fill="#a3a3a3" stroke="none">
+<g style="stroke: none !important;" transform="translate(0.000000,256.000000) scale(0.100000,-0.100000)"
+fill="inherit">
 <path d="M450 2550 c-19 -4 -45 -20 -57 -35 -44 -50 -35 -66 122 -225 80 -81
 145 -153 145 -161 0 -18 -211 -229 -229 -229 -8 0 -80 65 -161 145 -163 161
 -178 168 -230 117 -22 -22 -30 -42 -35 -87 -16 -126 14 -257 86 -371 127 -201

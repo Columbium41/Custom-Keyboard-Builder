@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import Button from "../Button/Button"
+import LazySVG from "../LazySVG/LazySVG"
 import "./Header.css"
 
 export default function Header() {
@@ -42,17 +43,11 @@ export default function Header() {
                 {/* Navigation Links */}
                 <div className="w-1/2 flex border-borders-between-columns">
                     {navigationLinks.map((link, index) => (
-                        <Link href={link.to} key={index} className="flex h-full my-auto">
+                        <Link href={link.to} key={index} className="flex h-full my-auto text-neutral-400 hover:text-orange-300">
                             <div className="w-14 h-5/6 relative mr-1.5 my-auto">
-                                <Image 
-                                src={link.to.substring(1) + ".svg"}
-                                alt={link.to.substring(1)}
-                                fill
-                                className="object-contain"
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                />
+                                <LazySVG name={link.to.substring(1)} className="w-full h-full fill-current stroke-current" />
                             </div>
-                            <h4 className="my-auto mr-2">
+                            <h4 className="my-auto mr-2 text-neutral-200">
                                 { link.name }
                             </h4>
                         </Link>
