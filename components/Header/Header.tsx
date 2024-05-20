@@ -43,7 +43,7 @@ export default function Header() {
                 {/* Navigation Links */}
                 <div className="w-1/2 flex border-borders-between-columns">
                     {navigationLinks.map((link, index) => (
-                        <Link href={link.to} key={index} className="flex h-full my-auto text-neutral-400 hover:text-orange-300">
+                        <Link href={link.to} key={index} className="flex h-full my-auto text-neutral-400 transition-colors duration-150 hover:text-orange-300">
                             <div className="w-14 h-5/6 relative mr-1.5 my-auto">
                                 <LazySVG name={link.to.substring(1)} className="w-full h-full fill-current stroke-current" />
                             </div>
