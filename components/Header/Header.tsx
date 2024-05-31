@@ -1,11 +1,16 @@
 import Image from "next/image"
 import Link from "next/link"
-import Button from "../Button/Button"
 import LazySVG from "../LazySVG/LazySVG";
 import "./Header.css"
 import HeaderSearchInput from "../HeaderSearchInput/HeaderSearchInput";
+import {LoginButton, LogoutButton, SignupButton} from "@/app/auth";
+import { Session } from "next-auth";
 
-export default function Header() {
+interface HeaderProps {
+    session: Session | null
+}
+
+export default function Header({ session }: HeaderProps) {
     const navigationLinks = [
         { name: "Builder", to: "/build" },
         { name: "Parts", to: "/parts" },
@@ -34,8 +39,12 @@ export default function Header() {
 
                 {/* User Profile Actions */}
                 <div className="w-1/2 h-full flex items-center justify-end gap-x-3">
-                    <Button text="Log In" className="bg-neutral-200 text-black"></Button>
-                    <Button text="Sign Up" className="bg-cyan-500 text-black"></Button>
+                    { !session && <LoginButton /> }
+                    {/* TODO: add link to user profile */}
+                    { session && session.user !== undefined && (
+                        <p>{ session.user.name }</p>
+                    )}
+                    { session && <LogoutButton /> }
                 </div>
             </div>
 
