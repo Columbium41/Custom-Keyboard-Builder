@@ -3,7 +3,7 @@ import Link from "next/link"
 import LazySVG from "../LazySVG/LazySVG";
 import "./Header.css"
 import HeaderSearchInput from "../HeaderSearchInput/HeaderSearchInput";
-import {LoginButton, LogoutButton, SignupButton} from "@/app/auth";
+import {LoginButton, LogoutButton, SignupButton} from "@/components/auth/auth";
 import { Session } from "next-auth";
 
 interface HeaderProps {
@@ -45,6 +45,7 @@ export default function Header({ session }: HeaderProps) {
                         <p>{ session.user.name }</p>
                     )}
                     { session && <LogoutButton /> }
+                    { !session && <SignupButton />}
                 </div>
             </div>
 

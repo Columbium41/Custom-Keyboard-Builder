@@ -2,6 +2,7 @@
 
 import { signIn, signOut } from "next-auth/react";
 import Button from "@/components/Button/Button";
+import Link from "next/link";
 
 export const LoginButton = () => {
     return <Button text="Login" className="bg-neutral-200 text-black" onClick={() => signIn()}></Button>
@@ -12,5 +13,5 @@ export const LogoutButton = () => {
 }
 
 export const SignupButton = () => {
-    return <Button text="Sign Up" className="bg-cyan-500 text-black"></Button>
+    return <Link href='/signup' className="px-4 py-2 rounded-md font-semibold bg-cyan-500 text-black">Sign Up</Link>
 }

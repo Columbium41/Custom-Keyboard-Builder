@@ -47,7 +47,9 @@ export const authOptions: NextAuthOptions = {
                 return {
                     id: user.id.toString(),
                     email: user.email,
-                    name: user.username
+                    name: user.username,
+                    createdAt: user.createdAt,
+                    updatedAt: user.updatedAt
                 }
             }
         })
@@ -58,7 +60,9 @@ export const authOptions: NextAuthOptions = {
                 ...session,
                 user: {
                     ...session.user,
-                    id: token.id
+                    id: token.id,
+                    createdAt: token.createdAt,
+                    updatedAt: token.updatedAt
                 }
             }
         },
@@ -68,7 +72,9 @@ export const authOptions: NextAuthOptions = {
 
                 return {
                     ...token,
-                    id: u.id
+                    id: u.id,
+                    createdAt: u.createdAt,
+                    updatedAt: u.updatedAt
                 }
             }
 
