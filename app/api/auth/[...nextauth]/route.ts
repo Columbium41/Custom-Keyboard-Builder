@@ -22,9 +22,10 @@ export const authOptions: NextAuthOptions = {
                     type: 'password'
                 }
             },
+            // @ts-ignore
             async authorize(credentials) {
                 if (!credentials?.email || !credentials.password) {
-                    return null
+                    return { error: "Sign In failed, please check your credentials." }
                 }
 
                 const user = await prisma.user.findUnique({
@@ -35,13 +36,17 @@ export const authOptions: NextAuthOptions = {
 
                 // email not found in users table
                 if (!user) {
-                    return null
+                    return { error: "Sign In failed, please check your credentials." }
                 }
 
                 const isPasswordValid = await compare(credentials.password, user.password)
 
                 if (!isPasswordValid) {
-                    return null
+                    return { error: "Sign In failed, please check your credentials." }
+                }
+
+                if (!user.verified) {
+                    return { error: "Your account is not verified, please check your email and verify it." }
                 }
 
                 return {
@@ -54,6 +59,9 @@ export const authOptions: NextAuthOptions = {
             }
         })
     ],
+    pages: {
+        signIn: '/signin'
+    },
     callbacks: {
         session: ({ session, token }) => {
             return {
@@ -79,6 +87,18 @@ export const authOptions: NextAuthOptions = {
             }
 
             return token
+        },
+        async signIn({ user, account, profile, email, credentials }) {
+            if (!user) {
+                throw new Error("Unknown Error");
+            }
+            // @ts-ignore
+            else if (user && user.error !== undefined) {
+                // @ts-ignore
+                throw new Error(user.error);
+            }
+
+            return true;
         }
     }
 }

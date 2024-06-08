@@ -7,7 +7,7 @@ type Props = {
     children?: React.ReactNode
 }
 
-export const Providers = ({ children }: Props) => {
+export const SessionProviders = ({ children }: Props) => {
     return (
         <SessionProvider>
             { children }
