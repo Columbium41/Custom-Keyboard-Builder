@@ -3,7 +3,7 @@
 import {useState, useEffect} from "react";
 import {useRouter} from "next/navigation";
 import {useSession} from "next-auth/react";
-import {useToastContext} from "@/providers/ToastProviders";
+import {useToastContext} from "@/app/providers/ToastProviders";
 
 export default function SignupPage() {
     const [email, setEmail] = useState('');

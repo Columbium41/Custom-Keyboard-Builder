@@ -1,8 +1,8 @@
 import {Inter} from "next/font/google";
-import {SessionProviders} from "@/providers/SessionProviders";
+import {SessionProviders} from "@/app/providers/SessionProviders";
 import "@/app/globals.css";
 import {Toaster} from "react-hot-toast";
-import {ToastProvider} from "@/providers/ToastProviders";
+import {ToastProvider} from "@/app/providers/ToastProviders";
 
 const inter = Inter({ subsets: ["latin"] });
 
