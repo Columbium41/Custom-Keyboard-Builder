@@ -15,12 +15,16 @@ export async function POST(req: NextRequest) {
     }
 
     // check that username & password are minimum lengths
-    if (username.length < 6) {
-        errors += "Username must be at least 6 characters long\n";
+    if (username.length < 6 || username.length > 30) {
+        errors += "Username must be between 6-30 characters\n";
+    }
+    if (password.length < 8 || password.length > 40) {
+        errors += "Password must be between 8-40 characters\n";
     }
 
-    if (password.length < 8) {
-        errors += "Password must be at least 8 characters long\n";
+    // check that username doesn't contain '@'
+    if (username.includes('@')) {
+        errors += "Username cannot contain the \'@\' symbol";
     }
 
     // check that password matches password confirmation
