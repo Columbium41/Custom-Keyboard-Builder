@@ -74,7 +74,7 @@ export default function SignInPage() {
                         />
                     </div>
 
-                    <button type="submit" className="bg-blue-700 w-28 px-4 py-2 rounded-md mx-auto">
+                    <button type="submit" className="bg-blue-700 px-4 py-2 rounded-md mx-auto">
                         Login
                     </button>
                 </form>

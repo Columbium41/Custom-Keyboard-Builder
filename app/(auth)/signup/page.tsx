@@ -38,14 +38,14 @@ export default function SignupPage() {
             if (data.error) {
                 reject(data.error);
             } else {
-                router.push('/signin');
+                router.push('/');
                 resolve('');
             }
         });
 
         showToastPromise(signUpPromise, {
             loading: 'Creating account...',
-            success: 'Successfully created account',
+            success: 'Successfully created account; please check your email and verify your account.',
             error: (err) => `${err}`
         });
     };
@@ -102,7 +102,7 @@ export default function SignupPage() {
                         />
                     </div>
 
-                    <button type="submit" className="bg-blue-700 w-28 px-4 py-2 rounded-md mx-auto">
+                    <button type="submit" className="bg-blue-700 px-4 py-2 rounded-md mx-auto">
                         Sign Up
                     </button>
                 </form>

@@ -1,6 +1,8 @@
 import {hash} from "bcrypt";
 import {prisma} from "@/lib/prisma";
 import {NextRequest} from "next/server";
+import jwt from "jsonwebtoken";
+import {sendEmailVerification} from "@/mailer/emailVerification";
 
 export async function POST(req: NextRequest) {
     const { username, email, password, passwordConfirmation } = await req.json();
@@ -66,6 +68,15 @@ export async function POST(req: NextRequest) {
                 username: username,
             },
         });
+
+        // Generate JWT & Send email verification link
+        const token = jwt.sign(
+            { userId: user.id },
+            process.env.EMAIL_SECRET as string,
+            { expiresIn: '24h' }
+        );
+
+        await sendEmailVerification(email, token);
 
         return new Response(JSON.stringify(user), {
             status: 200,
