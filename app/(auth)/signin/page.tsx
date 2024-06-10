@@ -10,12 +10,11 @@ export default function SignInPage() {
     const [password, setPassword] = useState('');
     const router = useRouter();
     const { data: session, status } = useSession();
-    const { showToast, showToastPromise } = useToastContext();
+    const { showToastPromise } = useToastContext();
 
     // check if user is already signed in
     useEffect(() => {
         if (status === 'authenticated') {
-            showToast('You are already signed in', {}, 'error');
             router.push('/');
         }
     }, [status]);
@@ -34,6 +33,7 @@ export default function SignInPage() {
                 reject(res?.error);
             } else if (res) {
                 resolve('');
+                router.push('/');
             } else {
                 reject("Unknown Error");
             }
