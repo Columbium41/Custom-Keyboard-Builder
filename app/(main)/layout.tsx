@@ -11,7 +11,7 @@ export default async function MainLayout({
     const session: Session | null = await getServerSession(authOptions)
 
     return (
-        <div>
+        <div className="h-full">
             <Header session={session}></Header>
 
             { children }

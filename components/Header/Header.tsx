@@ -22,7 +22,7 @@ export default function Header({ session }: HeaderProps) {
             {/* Top Header */}
             <div className="h-18 flex items-center justify-between px-12 border-b border-b-1 border-neutral-700">
                 {/* Logo */}
-                <Link href='/' className="max-w-1/2 h-4/5 flex">
+                <Link href='/' className="max-w-1/2 h-4/5 flex z-10">
                     <div className="w-20 h-full relative">
                         <Image 
                         src="/logo.ico"
