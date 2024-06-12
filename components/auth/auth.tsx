@@ -13,5 +13,5 @@ export const LogoutButton = () => {
 }
 
 export const SignupButton = () => {
-    return <Link href='/signup' className="px-4 py-2 rounded-md font-semibold bg-cyan-500 text-black">Sign Up</Link>
+    return <Link href='/signup' className="px-4 py-2 rounded-md font-semibold bg-cyan-500 text-black hover:bg-opacity-80 hover:shadow-lg transition duration-300">Sign Up</Link>
 }
