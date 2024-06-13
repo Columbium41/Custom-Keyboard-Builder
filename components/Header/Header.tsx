@@ -1,14 +1,14 @@
+'use client';
+
 import Image from "next/image"
 import Link from "next/link"
 import "./Header.css"
 import {LoginButton, LogoutButton, SignupButton} from "@/components/auth/auth";
-import { Session } from "next-auth";
+import {useSession} from "next-auth/react";
 
-interface HeaderProps {
-    session: Session | null
-}
+export default function Header() {
+    const { data: session } = useSession();
 
-export default function Header({ session }: HeaderProps) {
     return (
         <header className="bg-neutral-900 text-neutral-200">
             <div className="h-18 flex items-center justify-between px-12 border-b border-b-1 border-neutral-700">
