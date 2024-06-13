@@ -84,7 +84,7 @@ export default function SignInPage() {
                         </button>
                     </form>
 
-                    <Link href="/verify-email" className="text-blue-400 underline underline-offset-2 hover:brightness-75 transition duration-300">Re-send Email Verification</Link>
+                    <Link href="/verify_email" className="text-blue-400 underline underline-offset-2 hover:brightness-75 transition duration-300">Re-send Email Verification</Link>
                 </div>
             </div>
         )

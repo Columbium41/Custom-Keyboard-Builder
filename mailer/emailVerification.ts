@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendEmailVerification = async (email: string, token: string) => {
-    const verificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/verify-email?token=${token}`;
+    const verificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/verify_email?token=${token}`;
 
     const html = `
         <!DOCTYPE html>
