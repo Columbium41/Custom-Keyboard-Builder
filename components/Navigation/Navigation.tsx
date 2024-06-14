@@ -1,6 +1,6 @@
 import Link from "next/link";
 import LazySVG from "@/components/LazySVG/LazySVG";
-import HeaderSearchInput from "@/components/HeaderSearchInput/HeaderSearchInput";
+import NavigationSearch from "@/components/NavigationSearch/NavigationSearch";
 import "@/components/Header/Header.css";
 
 export default function Navigation() {
@@ -28,7 +28,7 @@ export default function Navigation() {
 
             {/* Search */}
             <div className="w-1/2 flex justify-end text-neutral-400 transition-colors duration-150">
-                <HeaderSearchInput/>
+                <NavigationSearch />
                 { /* TODO: implement backend for search feature */}
                 <div className="w-12 h-3/4 my-auto">
                     <LazySVG name="search" className="w-full h-full stroke-current hover:text-orange-300 cursor-pointer"/>
