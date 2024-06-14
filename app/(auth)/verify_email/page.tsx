@@ -16,7 +16,7 @@ export default function VerifyEmailPage() {
         if (token) {
             const validateEmail = async () => {
                 const res = await fetch(`/api/auth/verify_email`, {
-                    method: 'PATCH',
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -39,7 +39,7 @@ export default function VerifyEmailPage() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const res = await fetch(`/api/auth/verify_email`, {
+        const res = await fetch(`/api/auth/send_email_verification`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

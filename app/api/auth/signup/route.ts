@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Hash the password
-    const hashedPassword = await hash(password, 15);
+    const hashedPassword = await hash(password, 14);
 
     // Create the new user
     try {
