@@ -2,7 +2,9 @@
 
 import {useEffect, useState} from "react";
 import {useRouter, useSearchParams} from "next/navigation";
-import {useToastContext} from "@/app/providers/ToastProviders";
+import {useToastContext} from "@/components/providers/ToastProvider";
+import GoogleReCAPTCHA from "@/components/GoogleReCAPTCHA/GoogleReCAPTCHA";
+import {useCaptcha} from "@/components/providers/CaptchaProvider";
 
 export default function VerifyEmailPage() {
     const router = useRouter();
@@ -10,6 +12,7 @@ export default function VerifyEmailPage() {
     const { showToast } = useToastContext();
     const token = searchParams.get('token');
     const [email, setEmail] = useState('');
+    const { isCaptchaVerified } = useCaptcha();
 
     // validate token if present
     useEffect(() => {
@@ -36,8 +39,14 @@ export default function VerifyEmailPage() {
         }
     }, [router, token]);
 
+    // re-send email verification
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (!isCaptchaVerified) {
+            alert('Please verify the captcha');
+            return;
+        }
 
         const res = await fetch(`/api/auth/send_email_verification`, {
             method: 'POST',
@@ -76,6 +85,8 @@ export default function VerifyEmailPage() {
                                 required
                             />
                         </div>
+
+                        <GoogleReCAPTCHA className="mb-3" />
 
                         <button type="submit" className="bg-blue-700 px-4 py-2 rounded-md mx-auto">
                             Re-send Verification Email

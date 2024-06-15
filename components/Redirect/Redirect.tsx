@@ -2,7 +2,7 @@
 
 import {useEffect} from "react";
 import {useRouter} from "next/navigation";
-import {useToastContext} from "@/app/providers/ToastProviders";
+import {useToastContext} from "@/components/providers/ToastProvider";
 
 export default function Redirect({ to, message }: { to: string, message: string }) {
     const router = useRouter();

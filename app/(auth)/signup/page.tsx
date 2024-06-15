@@ -2,7 +2,9 @@
 
 import {useState} from "react";
 import {useRouter} from "next/navigation";
-import {useToastContext} from "@/app/providers/ToastProviders";
+import {useToastContext} from "@/components/providers/ToastProvider";
+import {useCaptcha} from "@/components/providers/CaptchaProvider";
+import GoogleReCAPTCHA from "@/components/GoogleReCAPTCHA/GoogleReCAPTCHA";
 
 export default function SignupPage() {
     const [email, setEmail] = useState('');
@@ -11,9 +13,16 @@ export default function SignupPage() {
     const [username , setUsername] = useState('');
     const router = useRouter();
     const { showToastPromise } = useToastContext();
+    const { isCaptchaVerified } = useCaptcha();
 
+    // submit form
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (!isCaptchaVerified) {
+            alert('Please verify the captcha');
+            return;
+        }
 
         const signUpPromise = new Promise(async (resolve, reject) => {
             const res = await fetch('/api/auth/signup', {
@@ -93,6 +102,8 @@ export default function SignupPage() {
                             required
                         />
                     </div>
+
+                    <GoogleReCAPTCHA className="mb-3" />
 
                     <button type="submit" className="bg-blue-700 px-4 py-2 rounded-md mx-auto">
                         Sign Up

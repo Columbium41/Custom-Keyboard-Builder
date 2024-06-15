@@ -2,7 +2,9 @@
 
 import {useEffect, useState} from "react";
 import {useRouter, useSearchParams} from "next/navigation";
-import {useToastContext} from "@/app/providers/ToastProviders";
+import {useToastContext} from "@/components/providers/ToastProvider";
+import GoogleReCAPTCHA from "@/components/GoogleReCAPTCHA/GoogleReCAPTCHA";
+import {useCaptcha} from "@/components/providers/CaptchaProvider";
 
 export default function PasswordResetPage() {
     const router = useRouter();
@@ -13,6 +15,7 @@ export default function PasswordResetPage() {
     const [newPassword, setNewPassword] = useState('');
     const [passwordConfirmation, setPasswordConfirmation] = useState('');
     const [tokenValid, setTokenValid] = useState<boolean | null>(null);
+    const { isCaptchaVerified } = useCaptcha();
 
     // validate URL token if present
     useEffect(() => {
@@ -45,6 +48,11 @@ export default function PasswordResetPage() {
     // send password reset email
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (!isCaptchaVerified) {
+            alert('Please verify the captcha');
+            return;
+        }
 
         const res = await fetch(`/api/auth/send_password_reset`, {
             method: 'POST',
@@ -105,6 +113,8 @@ export default function PasswordResetPage() {
                                 required
                             />
                         </div>
+
+                        <GoogleReCAPTCHA className="mb-3" />
 
                         <button type="submit" className="bg-blue-700 px-4 py-2 rounded-md mx-auto">
                             Submit

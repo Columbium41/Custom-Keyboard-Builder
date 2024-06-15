@@ -1,6 +1,7 @@
 import "@/app/globals.css";
 import {getServerSession} from "next-auth";
 import Redirect from "@/components/Redirect/Redirect";
+import {CaptchaProvider} from "@/components/providers/CaptchaProvider";
 
 export default async function AuthLayout({
     children,
@@ -12,8 +13,11 @@ export default async function AuthLayout({
 
     if (session === null) {
         return (
-            <div className="h-full">
-                { children }
+            <div>
+                <CaptchaProvider>
+                    { children }
+
+                </CaptchaProvider>
             </div>
         );
     } else {

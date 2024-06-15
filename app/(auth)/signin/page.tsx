@@ -3,7 +3,7 @@
 import {useState} from "react";
 import {useRouter} from "next/navigation";
 import {signIn} from "next-auth/react";
-import {useToastContext} from "@/app/providers/ToastProviders";
+import {useToastContext} from "@/components/providers/ToastProvider";
 import Link from "next/link";
 
 export default function SignInPage() {
