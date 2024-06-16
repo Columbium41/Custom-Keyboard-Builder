@@ -5,6 +5,7 @@ import {useRouter, useSearchParams} from "next/navigation";
 import {useToastContext} from "@/components/providers/ToastProvider";
 import GoogleReCAPTCHA from "@/components/GoogleReCAPTCHA/GoogleReCAPTCHA";
 import {useCaptcha} from "@/components/providers/CaptchaProvider";
+import {toast} from "react-hot-toast";
 
 export default function PasswordResetPage() {
     const router = useRouter();
@@ -54,6 +55,8 @@ export default function PasswordResetPage() {
             return;
         }
 
+        const loadingToast = toast.loading('Sending password reset email...');
+
         const res = await fetch(`/api/auth/send_password_reset`, {
             method: 'POST',
             headers: {
@@ -64,6 +67,7 @@ export default function PasswordResetPage() {
 
         const data = await res.json();
 
+        toast.dismiss(loadingToast);
         if (res.ok) {
             showToast(data.message, {}, 'success');
         } else {
@@ -75,6 +79,8 @@ export default function PasswordResetPage() {
     const handleChangePassword = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        const loadingToast = toast.loading('Changing password...');
+
         const res = await fetch(`/api/auth/password_reset`, {
             method: 'PATCH',
             headers: {
@@ -85,6 +91,7 @@ export default function PasswordResetPage() {
 
         const data = await res.json();
 
+        toast.dismiss(loadingToast);
         if (res.ok) {
             showToast(data.message, {}, 'success');
             router.push('/signin');

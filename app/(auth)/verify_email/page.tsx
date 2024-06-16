@@ -5,6 +5,7 @@ import {useRouter, useSearchParams} from "next/navigation";
 import {useToastContext} from "@/components/providers/ToastProvider";
 import GoogleReCAPTCHA from "@/components/GoogleReCAPTCHA/GoogleReCAPTCHA";
 import {useCaptcha} from "@/components/providers/CaptchaProvider";
+import {toast} from "react-hot-toast";
 
 export default function VerifyEmailPage() {
     const router = useRouter();
@@ -35,7 +36,7 @@ export default function VerifyEmailPage() {
                 }
             }
 
-            validateEmail().then(() => router.push('/'));
+            validateEmail().then(() => router.push('/signin'));
         }
     }, [router, token]);
 
@@ -48,6 +49,8 @@ export default function VerifyEmailPage() {
             return;
         }
 
+        const loadingToast = toast.loading('Sending password reset email...');
+
         const res = await fetch(`/api/auth/send_email_verification`, {
             method: 'POST',
             headers: {
@@ -58,6 +61,7 @@ export default function VerifyEmailPage() {
 
         const data = await res.json();
 
+        toast.dismiss(loadingToast);
         if (res.ok) {
             showToast(data.message, {}, 'success');
         } else {

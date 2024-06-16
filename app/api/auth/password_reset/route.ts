@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import jwt from "jsonwebtoken";
 import {NextRequest} from "next/server";
 import {hash} from "bcrypt";
+import {sendPasswordResetConfirmation} from "@/mailer/passwordReset";
 
 const PASSWORD_RESET_SECRET = process.env.PASSWORD_RESET_SECRET as string;
 
@@ -45,7 +46,12 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
     const { token, newPassword, passwordConfirmation } = await req.json();
 
-    if (newPassword != passwordConfirmation) {
+    if (newPassword.length < 8 || newPassword.length > 40) {
+        return new Response(JSON.stringify({ error: 'Passwords must be between 8 and 40 characters' }), {
+            status: 400,
+        });
+    }
+    else if (newPassword != passwordConfirmation) {
         return new Response(JSON.stringify({ error: 'Passwords do not match' }), {
             status: 400,
         });
@@ -77,6 +83,8 @@ export async function PATCH(req: NextRequest) {
                     where: { id: userId },
                     data: { password: hashedPassword }
                 });
+
+                await sendPasswordResetConfirmation(user.email);
 
                 return new Response(JSON.stringify({ message: 'Password successfully changed' }), {
                     status: 200,
