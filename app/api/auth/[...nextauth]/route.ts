@@ -98,6 +98,12 @@ export const authOptions: NextAuthOptions = {
                 throw new Error(user.error);
             }
 
+            // update user last login to now
+            await prisma.user.update({
+                where: { id: parseInt(user.id) },
+                data: { lastLogin: new Date() },
+            })
+
             return true;
         }
     }
