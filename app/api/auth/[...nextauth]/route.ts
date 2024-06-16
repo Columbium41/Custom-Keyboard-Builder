@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import {compare} from "bcrypt";
 import {User} from "@prisma/client";
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
     session: {
         strategy: 'jwt'
     },
