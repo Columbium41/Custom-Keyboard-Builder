@@ -28,33 +28,38 @@ const authOptions: NextAuthOptions = {
                     return { error: "Sign In failed, please check your credentials." }
                 }
 
-                const user = await prisma.user.findUnique({
-                    where: {
-                        email: credentials.email
+                try {
+                    const user = await prisma.user.findUnique({
+                        where: {
+                            email: credentials.email
+                        }
+                    })
+
+                    // email not found in users table
+                    if (!user) {
+                        return { error: "Sign In failed, please check your credentials." }
                     }
-                })
 
-                // email not found in users table
-                if (!user) {
-                    return { error: "Sign In failed, please check your credentials." }
-                }
+                    const isPasswordValid = await compare(credentials.password, user.password)
 
-                const isPasswordValid = await compare(credentials.password, user.password)
+                    if (!isPasswordValid) {
+                        return { error: "Sign In failed, please check your credentials." }
+                    }
 
-                if (!isPasswordValid) {
-                    return { error: "Sign In failed, please check your credentials." }
-                }
+                    if (!user.verified) {
+                        return { error: "Your account is not verified, please check your email and verify it." }
+                    }
 
-                if (!user.verified) {
-                    return { error: "Your account is not verified, please check your email and verify it." }
-                }
-
-                return {
-                    id: user.id.toString(),
-                    email: user.email,
-                    name: user.username,
-                    createdAt: user.createdAt,
-                    updatedAt: user.updatedAt
+                    return {
+                        id: user.id.toString(),
+                        email: user.email,
+                        name: user.username,
+                        createdAt: user.createdAt,
+                        updatedAt: user.updatedAt
+                    }
+                } catch (err) {
+                    console.log(err);
+                    return { error: 'Unknown Server Error, please try again later' }
                 }
             }
         })

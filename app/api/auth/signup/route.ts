@@ -40,27 +40,27 @@ export async function POST(req: NextRequest) {
         });
     }
 
-    // check if user already exists (email or username)
-    const existingUser = await prisma.user.findFirst({
-        where: {
-            OR: [
-                { email: email },
-                { username: username }
-            ],
-        },
-    });
-
-    if (existingUser) {
-        return new Response(JSON.stringify({ error: 'Username or email already in use' }), {
-            status: 400,
-        });
-    }
-
-    // Hash the password
-    const hashedPassword = await hash(password, 14);
-
     // Create the new user
     try {
+        // check if user already exists (email or username)
+        const existingUser = await prisma.user.findFirst({
+            where: {
+                OR: [
+                    { email: email },
+                    { username: username }
+                ],
+            },
+        });
+
+        if (existingUser) {
+            return new Response(JSON.stringify({ error: 'Username or email already in use' }), {
+                status: 400,
+            });
+        }
+
+        // Hash the password
+        const hashedPassword = await hash(password, 14);
+
         const user = await prisma.user.create({
             data: {
                 email: email,
