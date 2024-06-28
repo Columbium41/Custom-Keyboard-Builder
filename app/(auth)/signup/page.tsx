@@ -14,6 +14,35 @@ export default function SignupPage() {
     const router = useRouter();
     const { showToastPromise } = useToastContext();
     const { isCaptchaVerified } = useCaptcha();
+    const [usernameLength, setUsernameLength] = useState(false);
+    const [usernameSpecialChar, setUsernameSpecialChar] = useState(false);
+    const [passwordLength, setPasswordLength] = useState(false);
+
+    const handleUsernameChange = (value: string) => {
+        if (value.length < 6 || value.length > 30) {
+            setUsernameLength(true);
+        } else {
+            setUsernameLength(false)
+        }
+
+        if (value.includes('@')) {
+            setUsernameSpecialChar(true);
+        } else {
+            setUsernameSpecialChar(false);
+        }
+
+        setUsername(value);
+    }
+
+    const handlePasswordChange = (value: string) => {
+        if (value.length < 8 || value.length > 40) {
+            setPasswordLength(true);
+        } else {
+            setPasswordLength(false);
+        }
+
+        setPassword(value);
+    }
 
     // submit form
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -63,9 +92,13 @@ export default function SignupPage() {
                             className="border border-neutral-500 bg-transparent px-4 py-2 rounded-xl block w-full"
                             value={username}
                             placeholder="John Doe"
-                            onChange={(e) => setUsername(e.target.value)}
+                            onChange={(e) => handleUsernameChange(e.target.value)}
                             required
                         />
+                        <ul>
+                            <li className={"text-red-500 " + (usernameLength ? "" : "hidden")}>Username must be between 6-30 characters</li>
+                            <li className={"text-red-500 " + (usernameSpecialChar ? "" : "hidden")}>Username cannot contain the character &apos;@&apos;</li>
+                        </ul>
                     </div>
                     <div className="mb-3">
                         <label htmlFor="email-input" className="ml-0.5">Email:</label>
@@ -86,9 +119,12 @@ export default function SignupPage() {
                             type="password"
                             className="border border-neutral-500 bg-transparent px-4 py-2 rounded-xl block w-full"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => handlePasswordChange(e.target.value)}
                             required
                         />
+                        <ul>
+                            <li className={"text-red-500 " + (passwordLength ? "" : "hidden")}>Password must be between 8-40 characters</li>
+                        </ul>
                     </div>
                     <div className="mb-3">
                         <label htmlFor="password-confirmation-input" className="ml-0.5">Password
