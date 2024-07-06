@@ -24,9 +24,10 @@ export async function POST(req: NextRequest) {
         errors += "Password must be between 8-40 characters\n";
     }
 
-    // check that username doesn't contain '@'
-    if (username.includes('@')) {
-        errors += "Username cannot contain the \'@\' symbol";
+    // check that username is only alphanumerical characters and spaces
+    const regex = /^[a-zA-Z0-9\s]+$/;
+    if (!regex.test(username)) {
+        errors += "Username can only contain alphanumerical characters and spaces";
     }
 
     // check that password matches password confirmation

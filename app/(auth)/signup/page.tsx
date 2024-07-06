@@ -6,6 +6,8 @@ import {useToastContext} from "@/components/providers/ToastProvider";
 import {useCaptcha} from "@/components/providers/CaptchaProvider";
 import GoogleReCAPTCHA from "@/components/GoogleReCAPTCHA/GoogleReCAPTCHA";
 
+const regex = /^[a-zA-Z0-9\s]+$/;
+
 export default function SignupPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -25,7 +27,7 @@ export default function SignupPage() {
             setUsernameLength(false)
         }
 
-        if (value.includes('@')) {
+        if (!regex.test(value)) {
             setUsernameSpecialChar(true);
         } else {
             setUsernameSpecialChar(false);
@@ -97,7 +99,7 @@ export default function SignupPage() {
                         />
                         <ul>
                             <li className={"text-red-500 " + (usernameLength ? "" : "hidden")}>Username must be between 6-30 characters</li>
-                            <li className={"text-red-500 " + (usernameSpecialChar ? "" : "hidden")}>Username cannot contain the character &apos;@&apos;</li>
+                            <li className={"text-red-500 " + (usernameSpecialChar ? "" : "hidden")}>Only alphanumerical characters and spaces</li>
                         </ul>
                     </div>
                     <div className="mb-3">

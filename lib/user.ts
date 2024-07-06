@@ -1,7 +1,5 @@
 import {prisma} from "@/lib/prisma";
 import {Photo, Build} from "@prisma/client";
-import {getServerSession} from "next-auth";
-import {authOptions} from "@/app/api/auth/[...nextauth]/_authOptions";
 
 export interface UserIF {
     id: number;
