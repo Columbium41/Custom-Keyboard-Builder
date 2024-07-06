@@ -31,9 +31,13 @@ export default function Header() {
                 {/* User Profile Actions */}
                 <div className="w-1/2 h-full flex items-center justify-end gap-x-3">
                     { !session && <LoginButton /> }
-                    {/* TODO: add link to user profile */}
                     { session && session.user !== undefined && (
-                        <p>{ session.user.name }</p>
+                        <Link
+                            href={`/users/${encodeURIComponent(session.user.name || '')}`}
+                            className="transition-all duration-300 hover:text-orange-300"
+                        >
+                            { session.user.name }
+                        </Link>
                     )}
                     { session && <LogoutButton /> }
                     { !session && <SignupButton />}

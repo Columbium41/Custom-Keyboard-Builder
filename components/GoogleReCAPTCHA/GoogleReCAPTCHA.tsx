@@ -2,7 +2,7 @@
 
 import ReCAPTCHA from "react-google-recaptcha";
 import {useRef} from "react";
-import {verifyCaptcha} from "@/app/(auth)/_recaptcha";
+import {verifyCaptcha} from "@/actions/recaptcha";
 import {useCaptcha} from "@/components/providers/CaptchaProvider";
 
 export default function GoogleReCAPTCHA({ className }: { className?: string }) {

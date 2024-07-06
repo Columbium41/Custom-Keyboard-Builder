@@ -15,12 +15,47 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  password  String
-  username  String    @unique @db.VarChar(255)
-  verified  Boolean   @default(false)
-  lastLogin DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id          Int       @id @default(autoincrement())
+  email       String    @unique
+  password    String
+  username    String    @unique @db.VarChar(255)
+  description String?
+  verified    Boolean   @default(false)
+  lastLogin   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  avatar Photo?
+  builds Build[]
+}
+
+model Build {
+  build_id  Int      @id @default(autoincrement())
+  kit       String   @db.VarChar(255)
+  case      String   @db.VarChar(255)
+  pcb       String   @db.VarChar(255)
+  plate     String   @db.VarChar(255)
+  switches  String   @db.VarChar(255)
+  keycaps   String   @db.VarChar(255)
+  mods      String   @db.VarChar(1000)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId Int
+  user   User    @relation(fields: [userId], references: [id])
+  photos Photo[]
+}
+
+model Photo {
+  photo_id  Int      @id @default(autoincrement())
+  filename  String
+  fileURL   String
+  mimetype  String
+  size      Int
+  createdAt DateTime @default(now())
+
+  userId  Int?   @unique
+  user    User?  @relation(fields: [userId], references: [id])
+  buildId Int?
+  build   Build? @relation(fields: [buildId], references: [build_id])
 }

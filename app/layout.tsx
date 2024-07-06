@@ -6,6 +6,7 @@ import {ToastProvider} from "@/components/providers/ToastProvider";
 import Header from "@/components/Header/Header";
 
 import type {Metadata} from "next";
+import {ChakraProvider} from "@chakra-ui/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,16 +25,18 @@ export default function RootLayout({
             <head>
                 <script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
             </head>
-            <body className={inter.className + " h-screen"}>
-                <SessionProviders>
-                    <ToastProvider>
-                        <Header />
+            <body className={inter.className + " min-h-screen bg-neutral-700"}>
+                <ChakraProvider>
+                    <SessionProviders>
+                        <ToastProvider>
+                            <Header />
 
-                        {children}
+                            {children}
 
-                        <Toaster/>
-                    </ToastProvider>
-                </SessionProviders>
+                            <Toaster/>
+                        </ToastProvider>
+                    </SessionProviders>
+                </ChakraProvider>
             </body>
         </html>
     );
