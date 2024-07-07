@@ -5,9 +5,18 @@ import Link from "next/link"
 import "./Header.css"
 import {LoginButton, LogoutButton, SignupButton} from "@/components/auth/auth";
 import {useSession} from "next-auth/react";
+import {Button, Divider} from "@chakra-ui/react";
+import {useRouter} from "next/navigation";
 
 export default function Header() {
     const { data: session } = useSession();
+    const router = useRouter();
+
+    const handleUserClick = () => {
+        if (session && session.user) {
+            router.push(`/users/${encodeURIComponent(session.user.name || '')}`);
+        }
+    };
 
     return (
         <header className="bg-neutral-900 text-neutral-200">
@@ -29,19 +38,29 @@ export default function Header() {
                 </Link>
 
                 {/* User Profile Actions */}
-                <div className="w-1/2 h-full flex items-center justify-end gap-x-3">
-                    { !session && <LoginButton /> }
-                    { session && session.user !== undefined && (
-                        <Link
-                            href={`/users/${encodeURIComponent(session.user.name || '')}`}
-                            className="transition-all duration-300 hover:text-orange-300"
+                { (session && session.user !== undefined) ? (
+                    <div className="w-1/2 h-full flex items-center justify-end gap-x-2.5">
+                        <Button
+                            color="whiteAlpha.800"
+                            _hover={{
+                                color: "orange.400",
+                            }}
+                            variant="link"
+                            onClick={() => handleUserClick()}
                         >
                             { session.user.name }
-                        </Link>
-                    )}
-                    { session && <LogoutButton /> }
-                    { !session && <SignupButton />}
-                </div>
+                        </Button>
+                        <Divider orientation="vertical" className="!h-1/3" />
+                        <LogoutButton />
+                    </div>
+                ) : (
+                    <div className="w-1/2 h-full flex items-center justify-end gap-x-2.5">
+                        <LoginButton/>
+                        <Divider orientation="vertical" className="!h-1/3" />
+                        <SignupButton/>
+                    </div>
+                )}
+
             </div>
         </header>
     )
