@@ -7,7 +7,7 @@ build and configure their own custom keyboards and share them with other users.
 ## Technologies Used
 
 ### Frontend & UI
-- [React](https://react.dev/) + [Next.js (App Router)](https://nextjs.org/)
+- [React](https://react.dev/) + [Next.js (App Router)](https://nextjs.org/) (JS Library + Framework)
 - [TailwindCSS](https://tailwindcss.com/) (Utility)
 - [Chakra UI](https://v2.chakra-ui.com/) (Component Library)
 - [Axios](https://axios-http.com/) (Data Fetching)
