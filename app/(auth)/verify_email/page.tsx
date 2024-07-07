@@ -6,6 +6,7 @@ import {useToastContext} from "@/components/providers/ToastProvider";
 import GoogleReCAPTCHA from "@/components/GoogleReCAPTCHA/GoogleReCAPTCHA";
 import {useCaptcha} from "@/components/providers/CaptchaProvider";
 import {toast} from "react-hot-toast";
+import {Button} from "@chakra-ui/react";
 
 export default function VerifyEmailPage() {
     const router = useRouter();
@@ -14,6 +15,7 @@ export default function VerifyEmailPage() {
     const token = searchParams.get('token');
     const [email, setEmail] = useState('');
     const { isCaptchaVerified } = useCaptcha();
+    const [isLoading, setIsLoading] = useState(false);
 
     // validate token if present
     useEffect(() => {
@@ -49,6 +51,7 @@ export default function VerifyEmailPage() {
             return;
         }
 
+        setIsLoading(true);
         const loadingToast = toast.loading('Sending password reset email...');
 
         const res = await fetch(`/api/auth/send_email_verification`, {
@@ -67,6 +70,8 @@ export default function VerifyEmailPage() {
         } else {
             showToast(data.error, {}, 'error');
         }
+
+        setIsLoading(false);
     };
 
     if (token) {
@@ -92,9 +97,9 @@ export default function VerifyEmailPage() {
 
                         <GoogleReCAPTCHA className="mb-3" />
 
-                        <button type="submit" className="bg-blue-700 px-4 py-2 rounded-md mx-auto">
+                        <Button type="submit" colorScheme="cyan" className="mx-auto" isLoading={isLoading} width="auto">
                             Re-send Verification Email
-                        </button>
+                        </Button>
                     </form>
                 </div>
             </div>

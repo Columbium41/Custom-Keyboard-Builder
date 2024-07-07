@@ -5,15 +5,19 @@ import {useRouter} from "next/navigation";
 import {signIn} from "next-auth/react";
 import {useToastContext} from "@/components/providers/ToastProvider";
 import Link from "next/link";
+import {Button} from "@chakra-ui/react";
 
 export default function SignInPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const { showToastPromise } = useToastContext();
 
     const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        setIsLoading(true);
 
         const signInPromise = new Promise(async (resolve, reject) => {
             const res = await signIn('credentials', {
@@ -30,6 +34,8 @@ export default function SignInPage() {
             } else {
                 reject("Unknown Error");
             }
+
+            setIsLoading(false);
         });
 
         showToastPromise(signInPromise, {
@@ -68,9 +74,9 @@ export default function SignInPage() {
                         />
                     </div>
 
-                    <button type="submit" className="bg-blue-700 px-4 py-2 rounded-md mx-auto">
+                    <Button type="submit" colorScheme="cyan" className="mx-auto" isLoading={isLoading} width="auto">
                         Login
-                    </button>
+                    </Button>
                 </form>
 
                 <Link href="/verify_email" className="block text-blue-400 underline underline-offset-2 hover:brightness-75 transition duration-300 mb-1">Re-send email verification</Link>

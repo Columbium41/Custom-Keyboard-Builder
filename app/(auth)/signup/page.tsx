@@ -5,6 +5,7 @@ import {useRouter} from "next/navigation";
 import {useToastContext} from "@/components/providers/ToastProvider";
 import {useCaptcha} from "@/components/providers/CaptchaProvider";
 import GoogleReCAPTCHA from "@/components/GoogleReCAPTCHA/GoogleReCAPTCHA";
+import {Button} from "@chakra-ui/react";
 
 const regex = /^[a-zA-Z0-9\s]+$/;
 
@@ -19,6 +20,7 @@ export default function SignupPage() {
     const [usernameLength, setUsernameLength] = useState(false);
     const [usernameSpecialChar, setUsernameSpecialChar] = useState(false);
     const [passwordLength, setPasswordLength] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleUsernameChange = (value: string) => {
         if (value.length < 6 || value.length > 30) {
@@ -55,6 +57,8 @@ export default function SignupPage() {
             return;
         }
 
+        setIsLoading(true);
+
         const signUpPromise = new Promise(async (resolve, reject) => {
             const res = await fetch('/api/auth/signup', {
                 method: 'POST',
@@ -72,6 +76,8 @@ export default function SignupPage() {
                 router.push('/');
                 resolve('');
             }
+
+            setIsLoading(false);
         });
 
         showToastPromise(signUpPromise, {
@@ -143,9 +149,9 @@ export default function SignupPage() {
 
                     <GoogleReCAPTCHA className="mb-3" />
 
-                    <button type="submit" className="bg-blue-700 px-4 py-2 rounded-md mx-auto">
+                    <Button type="submit" colorScheme="cyan" className="mx-auto" isLoading={isLoading} width="auto">
                         Sign Up
-                    </button>
+                    </Button>
                 </form>
             </div>
         </div>

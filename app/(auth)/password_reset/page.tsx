@@ -6,6 +6,7 @@ import {useToastContext} from "@/components/providers/ToastProvider";
 import GoogleReCAPTCHA from "@/components/GoogleReCAPTCHA/GoogleReCAPTCHA";
 import {useCaptcha} from "@/components/providers/CaptchaProvider";
 import {toast} from "react-hot-toast";
+import {Button} from "@chakra-ui/react";
 
 export default function PasswordResetPage() {
     const router = useRouter();
@@ -17,6 +18,7 @@ export default function PasswordResetPage() {
     const [passwordConfirmation, setPasswordConfirmation] = useState('');
     const [tokenValid, setTokenValid] = useState<boolean | null>(null);
     const { isCaptchaVerified } = useCaptcha();
+    const [isLoading, setIsLoading] = useState(false);
 
     // validate URL token if present
     useEffect(() => {
@@ -55,6 +57,7 @@ export default function PasswordResetPage() {
             return;
         }
 
+        setIsLoading(true);
         const loadingToast = toast.loading('Sending password reset email...');
 
         const res = await fetch(`/api/auth/send_password_reset`, {
@@ -73,12 +76,15 @@ export default function PasswordResetPage() {
         } else {
             showToast(data.error, {}, 'error');
         }
+
+        setIsLoading(false);
     };
 
     // change password
     const handleChangePassword = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        setIsLoading(true);
         const loadingToast = toast.loading('Changing password...');
 
         const res = await fetch(`/api/auth/password_reset`, {
@@ -98,6 +104,8 @@ export default function PasswordResetPage() {
         } else {
             showToast(data.error, {}, 'error');
         }
+
+        setIsLoading(false);
     }
 
     if (tokenValid === null) {
@@ -123,9 +131,9 @@ export default function PasswordResetPage() {
 
                         <GoogleReCAPTCHA className="mb-3" />
 
-                        <button type="submit" className="bg-blue-700 px-4 py-2 rounded-md mx-auto">
+                        <Button type="submit" colorScheme="cyan" className="mx-auto" isLoading={isLoading} width="auto">
                             Submit
-                        </button>
+                        </Button>
                     </form>
                 </div>
             </div>
@@ -159,9 +167,9 @@ export default function PasswordResetPage() {
                             />
                         </div>
 
-                        <button type="submit" className="bg-blue-700 px-4 py-2 rounded-md mx-auto">
-                            Submit
-                        </button>
+                        <Button type="submit" colorScheme="cyan" className="mx-auto" isLoading={isLoading} width="auto">
+                            Change Password
+                        </Button>
                     </form>
                 </div>
             </div>
