@@ -23,7 +23,7 @@ export const sendEmailVerification = async (email: string, token: string) => {
             <title>Email Verification</title>
         </head>
         <body>
-            <p>Welcome to Custom Keyboard Builder, please verify your email to start using your account by clicking the link below:</p>
+            <p>Welcome to MechForum, please verify your email to start using your account by clicking the link below:</p>
             <a href="${verificationUrl}">${verificationUrl}</a>
         </body>
         </html>
@@ -31,11 +31,11 @@ export const sendEmailVerification = async (email: string, token: string) => {
 
     await transporter.sendMail({
         from: {
-            name: 'Custom Keyboard Builder',
+            name: 'MechForum',
             address: process.env.EMAIL_USER as string,
         },
         to: email,
-        subject: 'Verify Your Email - Custom Keyboard Builder',
+        subject: 'Verify Your Email - MechForum',
         html: html,
     });
 };

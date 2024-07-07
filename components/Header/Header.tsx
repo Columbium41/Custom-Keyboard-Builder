@@ -33,7 +33,7 @@ export default function Header() {
                         />
                     </div>
                     <h1 className="my-auto text-xl ubuntu-medium select-none">
-                        Custom Keyboard Builder
+                        MechForum
                     </h1>
                 </Link>
 

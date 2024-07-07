@@ -31,11 +31,11 @@ export const sendPasswordReset = async (email: string, token: string) => {
 
     await transporter.sendMail({
         from: {
-            name: 'Custom Keyboard Builder',
+            name: 'MechForum',
             address: process.env.EMAIL_USER as string,
         },
         to: email,
-        subject: 'Password Reset - Custom Keyboard Builder',
+        subject: 'Password Reset - MechForum',
         html: html,
     });
 };
@@ -57,11 +57,11 @@ export const sendPasswordResetConfirmation = async (email: string) => {
 
     await transporter.sendMail({
         from: {
-            name: 'Custom Keyboard Builder',
+            name: 'MechForum',
             address: process.env.EMAIL_USER as string,
         },
         to: email,
-        subject: 'Your password has been reset - Custom Keyboard Builder',
+        subject: 'Your password has been reset - MechForum',
         html: html,
     });
 };

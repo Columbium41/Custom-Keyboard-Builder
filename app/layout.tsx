@@ -11,7 +11,7 @@ import {ChakraProvider} from "@chakra-ui/react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Custom Keyboard Builder",
+    title: "MechForum",
     description: "A web application that allows users to build their own custom keyboards and share them with other people",
 };
 
