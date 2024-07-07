@@ -24,7 +24,7 @@ const acceptedTypes = [
     "image/gif",
 ];
 
-const maxFileSize = 1024 * 1024 * 5; // 5 MB
+const maxFileSize = 1024 * 1024 * 2; // 2 MB
 
 export async function getSignedAvatarURL(type: string, size: number, checksum: string) {
     try {
@@ -33,13 +33,13 @@ export async function getSignedAvatarURL(type: string, size: number, checksum: s
             return {failure: "Invalid file type"}
         }
         if (size > maxFileSize) {
-            return {failure: "Files must be under 5MB"}
+            return {failure: "Files must be under 2 MB"}
         }
 
         // check if user is authenticated before giving access
         const session = await getServerSession(authOptions);
         if (!session || !session.user) {
-            return {failure: "Not Authenticated"}
+            return {failure: "User is not authenticated"}
         }
 
         // put object in s3 bucket

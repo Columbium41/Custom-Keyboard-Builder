@@ -37,16 +37,15 @@ export default function UploadSinglePhoto() {
         }
 
         try {
-            setIsLoading(true);
-
             const checksum = await computeSHA256(selectedFile);
             const signedURLResult = await getSignedAvatarURL(selectedFile.type, selectedFile.size, checksum);
 
             if (signedURLResult.failure !== undefined) {
-                showToast('You must be signed in to upload this image', {}, 'error')
+                showToast(signedURLResult.failure, {}, 'error')
                 return;
             }
 
+            setIsLoading(true);
             const url = signedURLResult.success.url;
 
             await fetch(url, {
@@ -77,9 +76,10 @@ export default function UploadSinglePhoto() {
                     onChange={handleFileChange}
                     display="none"
                 />
-                <Button as="label" htmlFor="file-upload" cursor="pointer" colorScheme='blue'>
+                <Button as="label" htmlFor="file-upload" cursor="pointer" colorScheme='blue' className="mb-1">
                     Choose Image
                 </Button>
+                <p>Max File Size: 2MB</p>
             </FormControl>
             {preview && <Image src={preview} alt="Image Preview" mt={4} maxWidth="200px" maxHeight="200px" objectFit="contain" />}
             <Button onClick={handleUpload} mt={4} isDisabled={!selectedFile} colorScheme='blue' isLoading={isLoading}>
