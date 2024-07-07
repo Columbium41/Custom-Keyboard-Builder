@@ -42,7 +42,7 @@ model Build {
   updatedAt DateTime @updatedAt
 
   userId Int
-  user   User    @relation(fields: [userId], references: [id])
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   photos Photo[]
 }
 
@@ -55,7 +55,7 @@ model Photo {
   createdAt DateTime @default(now())
 
   userId  Int?   @unique
-  user    User?  @relation(fields: [userId], references: [id])
+  user    User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
   buildId Int?
-  build   Build? @relation(fields: [buildId], references: [build_id])
+  build   Build? @relation(fields: [buildId], references: [build_id], onDelete: Cascade)
 }
