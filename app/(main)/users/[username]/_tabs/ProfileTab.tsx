@@ -9,9 +9,12 @@ import {useToastContext} from "@/components/providers/ToastProvider";
 export default function ProfileTab({ user, currentUser }: { user: UserIF, currentUser: boolean }) {
     const [descriptionValue, setDescriptionValue] = useState("");
     const [editingDescription, setEditingDescription] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const {showToast} = useToastContext();
 
     const handleUpdateDescription = async () => {
+        setIsLoading(true);
+
         await fetch("/api/users/update_description", {
             method: "PATCH",
             headers: {
@@ -20,6 +23,7 @@ export default function ProfileTab({ user, currentUser }: { user: UserIF, curren
             body: JSON.stringify({ username: user.username, description: descriptionValue }),
         }).then(async (res) => {
             const data = await res.json();
+            setIsLoading(false);
 
             if (res.ok) {
                 window.location.reload();
@@ -69,7 +73,7 @@ export default function ProfileTab({ user, currentUser }: { user: UserIF, curren
                             />
                             <p className="mb-2">{ descriptionValue.length + '/1000' }</p>
 
-                            <Button colorScheme='cyan' onClick={() => handleUpdateDescription()} className="mr-2">
+                            <Button colorScheme='cyan' onClick={() => handleUpdateDescription()} className="mr-2" isLoading={isLoading}>
                                 Save
                             </Button>
                             <Button colorScheme='cyan' variant='outline' onClick={() => setEditingDescription(false)}>

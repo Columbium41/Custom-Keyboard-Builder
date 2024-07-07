@@ -17,6 +17,7 @@ const computeSHA256  = async (file: File) => {
 export default function UploadSinglePhoto() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const { showToast } = useToastContext();
 
     const handleFileChange = (event: any) => {
@@ -36,6 +37,8 @@ export default function UploadSinglePhoto() {
         }
 
         try {
+            setIsLoading(true);
+
             const checksum = await computeSHA256(selectedFile);
             const signedURLResult = await getSignedAvatarURL(selectedFile.type, selectedFile.size, checksum);
 
@@ -54,9 +57,11 @@ export default function UploadSinglePhoto() {
                 },
             });
 
+            setIsLoading(false);
             showToast('Successfully uploaded image', {}, 'success');
             window.location.reload();
         } catch (e) {
+            setIsLoading(false);
             console.error(e);
             showToast("Image didn't upload properly. Please try again later", {}, 'error');
         }
@@ -76,8 +81,8 @@ export default function UploadSinglePhoto() {
                     Choose Image
                 </Button>
             </FormControl>
-            {preview && <Image src={preview} alt="Image Preview" mt={4} maxHeight="300px" objectFit="contain" />}
-            <Button onClick={handleUpload} mt={4} isDisabled={!selectedFile} colorScheme='blue'>
+            {preview && <Image src={preview} alt="Image Preview" mt={4} maxWidth="200px" maxHeight="200px" objectFit="contain" />}
+            <Button onClick={handleUpload} mt={4} isDisabled={!selectedFile} colorScheme='blue' isLoading={isLoading}>
                 Upload Image
             </Button>
         </Box>
