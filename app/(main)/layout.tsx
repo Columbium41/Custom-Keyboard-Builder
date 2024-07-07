@@ -7,7 +7,7 @@ export default function MainLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <div>
+        <div className="min-h-full flex-grow flex flex-col">
             <Navigation />
 
             { children }

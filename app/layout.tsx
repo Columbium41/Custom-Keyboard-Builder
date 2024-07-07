@@ -25,7 +25,7 @@ export default function RootLayout({
             <head>
                 <script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
             </head>
-            <body className={inter.className + " min-h-screen bg-neutral-700"}>
+            <body className={inter.className + " min-h-screen flex flex-col bg-neutral-700"}>
                 <ChakraProvider>
                     <SessionProviders>
                         <ToastProvider>
