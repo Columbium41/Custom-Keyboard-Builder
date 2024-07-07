@@ -8,7 +8,7 @@ import Link from "next/link";
 import {Button} from "@chakra-ui/react";
 
 export default function SignInPage() {
-    const [email, setEmail] = useState('');
+    const [usernameOrEmail, setUsernameOrEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
@@ -22,7 +22,7 @@ export default function SignInPage() {
         const signInPromise = new Promise(async (resolve, reject) => {
             const res = await signIn('credentials', {
                 redirect: false,
-                email,
+                usernameOrEmail,
                 password,
             });
 
@@ -51,14 +51,14 @@ export default function SignInPage() {
                 <h1 className="text-center font-bold text-2xl mb-3">Sign into your Account</h1>
                 <form onSubmit={handleSignIn} className="flex flex-col justify-center mb-4">
                     <div className="mb-3">
-                        <label htmlFor="email-input" className="ml-0.5">Email:</label>
+                        <label htmlFor="username-or-email-input" className="ml-0.5">Username or Email:</label>
                         <input
-                            id="email-input"
-                            type="email"
+                            id="username-or-email-input"
+                            type="text"
                             className="border border-neutral-500 bg-transparent px-4 py-2 rounded-xl block w-full"
-                            value={email}
+                            value={usernameOrEmail}
                             placeholder="hello@example.com"
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e) => setUsernameOrEmail(e.target.value)}
                             required
                         />
                     </div>

@@ -12,9 +12,9 @@ export const authOptions: NextAuthOptions = {
         CredentialsProvider({
             name: 'Password',
             credentials: {
-                email: {
-                    label: 'Email',
-                    type: 'email',
+                usernameOrEmail: {
+                    label: 'usernameOrEmail',
+                    type: 'string',
                     placeholder: 'hello@example.com'
                 },
                 password: {
@@ -24,18 +24,31 @@ export const authOptions: NextAuthOptions = {
             },
             // @ts-ignore
             async authorize(credentials) {
-                if (!credentials?.email || !credentials.password) {
+                if (!credentials?.usernameOrEmail || !credentials.password) {
                     return { error: "Sign In failed, please check your credentials." }
                 }
 
                 try {
-                    const user = await prisma.user.findUnique({
-                        where: {
-                            email: credentials.email
-                        }
-                    })
+                    let user = null;
 
-                    // email not found in users table
+                    // email
+                    if (credentials.usernameOrEmail.includes("@")) {
+                        user = await prisma.user.findUnique({
+                            where: {
+                                email: credentials.usernameOrEmail
+                            }
+                        });
+                    }
+                    // username
+                    else {
+                        user = await prisma.user.findUnique({
+                            where: {
+                                username: credentials.usernameOrEmail
+                            }
+                        });
+                    }
+
+                    // not found in users table
                     if (!user) {
                         return { error: "Sign In failed, please check your credentials." }
                     }
