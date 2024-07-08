@@ -41,9 +41,9 @@ export default function Header() {
                 { status === 'loading' && (
                     <div className="w-1/2 h-full flex items-center justify-end gap-x-2.5">
                         <Stack className="w-36" gap={1.5}>
-                            <Skeleton className="!w-full !h-1.5" />
-                            <Skeleton className="!w-full !h-1.5" />
-                            <Skeleton className="!w-full !h-1.5" />
+                            <Skeleton className="!w-full !h-1" />
+                            <Skeleton className="!w-full !h-1" />
+                            <Skeleton className="!w-full !h-1" />
                         </Stack>
                     </div>
                 )}
