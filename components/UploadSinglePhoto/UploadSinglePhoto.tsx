@@ -37,15 +37,16 @@ export default function UploadSinglePhoto() {
         }
 
         try {
+            setIsLoading(true);
             const checksum = await computeSHA256(selectedFile);
             const signedURLResult = await getSignedAvatarURL(selectedFile.type, selectedFile.size, checksum);
 
             if (signedURLResult.failure !== undefined) {
                 showToast(signedURLResult.failure, {}, 'error')
+                setIsLoading(false);
                 return;
             }
 
-            setIsLoading(true);
             const url = signedURLResult.success.url;
 
             await fetch(url, {
