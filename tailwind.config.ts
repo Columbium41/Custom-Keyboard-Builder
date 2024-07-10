@@ -16,6 +16,12 @@ const config: Config = {
       height: {
         '18': '4.5rem',
       },
+      colors: {
+        'fg-light-mode': '#101010',
+        'fg-dark-mode': '#F0F0F0',
+        'bg-light-mode': '#EDF2F7',
+        'bg-dark-mode': '#1A202C',
+      },
     },
   },
   plugins: [],

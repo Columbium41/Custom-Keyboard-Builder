@@ -41,6 +41,14 @@ const components = {
             }
         }),
     },
+    Avatar: {
+        // @ts-ignore
+        baseStyle: props => ({
+            container: {
+                borderColor: mode('#101010', '#F0F0F0')(props)
+            }
+        })
+    },
 };
 
 const themeConfig: ThemeConfig = {
