@@ -31,13 +31,13 @@ model User {
 
 model Build {
   build_id  Int      @id @default(autoincrement())
-  kit       String   @db.VarChar(255)
-  case      String   @db.VarChar(255)
-  pcb       String   @db.VarChar(255)
-  plate     String   @db.VarChar(255)
-  switches  String   @db.VarChar(255)
-  keycaps   String   @db.VarChar(255)
-  mods      String   @db.VarChar(1000)
+  kit       String   @default("") @db.VarChar(255)
+  case      String   @default("") @db.VarChar(255)
+  pcb       String   @default("") @db.VarChar(255)
+  plate     String   @default("") @db.VarChar(255)
+  switches  String   @default("") @db.VarChar(255)
+  keycaps   String   @default("") @db.VarChar(255)
+  mods      String   @default("") @db.VarChar(1000)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -47,12 +47,13 @@ model Build {
 }
 
 model Photo {
-  photo_id  Int      @id @default(autoincrement())
-  filename  String
-  fileURL   String
-  mimetype  String
-  size      Int
-  createdAt DateTime @default(now())
+  photo_id    Int      @id @default(autoincrement())
+  filename    String
+  fileURL     String
+  mimetype    String
+  size        Int
+  isThumbnail Boolean  @default(false)
+  createdAt   DateTime @default(now())
 
   userId  Int?   @unique
   user    User?  @relation(fields: [userId], references: [id], onDelete: Cascade)

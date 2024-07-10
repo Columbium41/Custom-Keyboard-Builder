@@ -70,6 +70,7 @@ export default function ProfileTab({ user, currentUser }: { user: UserIF, curren
                                 onChange={(e) => setDescriptionValue(e.target.value)}
                                 className="mb-2"
                                 isInvalid={descriptionValue.length > 1000}
+                                placeholder={"enter a description"}
                             />
                             <p className="mb-2">{ descriptionValue.length + '/1000' }</p>
 

@@ -1,4 +1,4 @@
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
+import {Tabs, TabList, TabPanels, Tab, TabPanel} from '@chakra-ui/react'
 import ProfileTab from "@/app/(main)/users/[username]/_tabs/ProfileTab";
 import {authOptions} from "@/app/api/auth/[...nextauth]/_authOptions";
 import {getServerSession} from "next-auth";
@@ -17,7 +17,7 @@ export default async function UsersPage({ params }: { params: { username: string
     const currentUser = (user.username === session.user.name);
 
     return (
-        <div className="h-full pt-3 text-neutral-200 flex flex-col gap-4">
+        <div className="h-full pt-3 flex flex-col gap-4">
             <h1 className="text-center text-4xl font-semibold">Profile</h1>
 
             {/* User Avatar */}

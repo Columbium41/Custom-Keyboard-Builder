@@ -7,7 +7,7 @@ import {useRouter} from "next/navigation";
 export const LoginButton = () => {
     return (
         <Button
-            color="whiteAlpha.800"
+            color="inherit"
             _hover={{
                 color: "orange.400",
             }}
@@ -20,7 +20,7 @@ export const LoginButton = () => {
 export const LogoutButton = () => {
     return (
         <Button
-            color="whiteAlpha.800"
+            color="inherit"
             _hover={{
                 color: "orange.400",
             }}
@@ -35,7 +35,7 @@ export const SignupButton = () => {
 
     return (
         <Button
-            color="whiteAlpha.800"
+            color="inherit"
             _hover={{
                 color: "orange.400",
             }}
