@@ -6,7 +6,7 @@ import {useToastContext} from "@/components/providers/ToastProvider";
 import GoogleReCAPTCHA from "@/components/GoogleReCAPTCHA/GoogleReCAPTCHA";
 import {useCaptcha} from "@/components/providers/CaptchaProvider";
 import {toast} from "react-hot-toast";
-import {Button} from "@chakra-ui/react";
+import {Button, Spinner} from "@chakra-ui/react";
 
 export default function VerifyEmailPage() {
     const router = useRouter();
@@ -75,7 +75,12 @@ export default function VerifyEmailPage() {
     };
 
     if (token) {
-        return <></>
+        return (<Spinner
+            thickness='4px'
+            emptyColor='gray.200'
+            color='orange.500'
+            className="!w-28 !h-28 absolute inset-0 m-auto"
+        />)
     } else {
         return (
             <div className="w-96 h-full flex flex-col align-middle absolute inset-0 m-auto">
