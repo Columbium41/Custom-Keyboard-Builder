@@ -8,6 +8,7 @@ import {GoPerson} from "react-icons/go";
 import {Session} from "next-auth";
 import {LoginButton, LogoutButton, SignupButton} from "@/components/auth/auth";
 import {useRouter} from "next/navigation";
+import Link from "next/link";
 
 interface AccountDrawerProps {
     session: Session | null,
@@ -20,12 +21,6 @@ export function AccountDrawer({ session, status }: AccountDrawerProps) {
 
     const handleClick = () => {
         onOpen();
-    };
-
-    const handleUserClick = () => {
-        if (session && session.user) {
-            router.push(`/users/${encodeURIComponent(session.user.name || '')}`);
-        }
     };
 
     if (session && session.user) {
@@ -47,16 +42,13 @@ export function AccountDrawer({ session, status }: AccountDrawerProps) {
                         <DrawerBody className="!p-0">
                             <div className="w-full h-12 flex items-center border-b border-inherit px-3">
                                 <div onClick={onClose}>
-                                    <Button
+                                    <Link
+                                        href={`/users/${encodeURIComponent(session.user.name || '')}`}
                                         color="inherit"
-                                        _hover={{
-                                            color: "orange.400",
-                                        }}
-                                        variant="link"
-                                        onClick={() => handleUserClick()}
+                                        className="font-semibold hover:text-orange-300"
                                     >
                                         Profile
-                                    </Button>
+                                    </Link>
                                 </div>
                             </div>
                             <div className="w-full h-12 flex items-center border-b border-inherit px-3">

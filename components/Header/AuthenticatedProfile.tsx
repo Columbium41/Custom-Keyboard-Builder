@@ -5,31 +5,23 @@ import {LogoutButton} from "@/components/auth/auth";
 import {MoonIcon, SunIcon} from "@chakra-ui/icons";
 import {useRouter} from "next/navigation";
 import {Session} from "next-auth";
+import Link from "next/link";
 
 export function AuthenticatedProfile({ session }: { session: Session }) {
     const router = useRouter();
     const { colorMode, toggleColorMode } = useColorMode();
     const dividerBGs = useColorModeValue('whiteAlpha.600', 'whiteAlpha.700');
 
-    const handleUserClick = () => {
-        if (session && session.user) {
-            router.push(`/users/${encodeURIComponent(session.user.name || '')}`);
-        }
-    };
-
     if (session && session.user) {
         return (
             <div className="hidden w-1/2 h-full lg:flex items-center justify-end gap-x-2.5">
-                <Button
+                <Link
+                    href={`/users/${encodeURIComponent(session.user.name || '')}`}
                     color="inherit"
-                    _hover={{
-                        color: "orange.400",
-                    }}
-                    variant="link"
-                    onClick={() => handleUserClick()}
+                    className="font-semibold hover:text-orange-300"
                 >
-                    {session.user.name}
-                </Button>
+                    { session.user.name }
+                </Link>
                 <Divider orientation="vertical" className="!h-1/3 hidden lg:block" borderColor={dividerBGs}/>
                 <LogoutButton/>
                 <Divider orientation="vertical" className="!h-1/3 hidden lg:block" borderColor={dividerBGs}/>
