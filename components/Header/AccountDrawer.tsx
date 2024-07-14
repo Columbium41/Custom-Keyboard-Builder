@@ -55,7 +55,7 @@ export function AccountDrawer({ session, status }: AccountDrawerProps) {
                                         variant="link"
                                         onClick={() => handleUserClick()}
                                     >
-                                        {session.user.name}
+                                        Profile
                                     </Button>
                                 </div>
                             </div>

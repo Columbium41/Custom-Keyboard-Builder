@@ -34,9 +34,9 @@ export default function ProfileTab({ user, currentUser }: { user: UserIF, curren
     }
 
     return (
-        <div className="flex flex-row text-start gap-3">
+        <div className="flex flex-row flex-wrap sm:flex-nowrap text-start gap-3">
             {/* Account details */}
-            <div className="w-1/4">
+            <div className="w-full sm:w-1/4">
                 <h3 className="font-semibold mb-2 text-xl">Completed Builds</h3>
                 <Divider className="mb-3" />
                 {/* TODO: change to link */}
@@ -48,7 +48,7 @@ export default function ProfileTab({ user, currentUser }: { user: UserIF, curren
             </div>
 
             {/* Profile */}
-            <div className="w-3/4">
+            <div className="w-full sm:w-3/4">
                 {/* User Description */}
                 <div className="mb-5">
                     <h3 className="font-semibold mb-2 text-xl">Profile</h3>
