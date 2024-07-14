@@ -3,14 +3,14 @@ import LazySVG from "@/components/LazySVG/LazySVG";
 import NavigationSearch from "@/components/NavigationSearch/NavigationSearch";
 import "@/components/Header/Header.css";
 
-export default function Navigation() {
-    const navigationLinks = [
-        { name: "Build", to: "/build" },
-        { name: "User Builds", to: "/builds" }
-    ];
+export const navigationLinks = [
+    { name: "Build", to: "/build" },
+    { name: "User Builds", to: "/builds" }
+];
 
+export default function Navigation() {
     return (
-        <nav className="border-b border-b-1 border-neutral-700 h-14 px-28 flex">
+        <nav className="hidden border-b border-b-1 border-neutral-700 h-14 xl:px-28 lg:flex">
             {/* Navigation Links */}
             <div className="w-1/2 flex border-borders-between-columns">
                 {navigationLinks.map((link, index) => (

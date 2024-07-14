@@ -88,7 +88,7 @@ export default function SignupPage() {
     };
 
     return (
-        <div className="w-96 h-full flex flex-col align-middle absolute inset-0 m-auto">
+        <div className="w-80 sm:w-96 h-full flex flex-col align-middle my-3 m-auto">
             <div className="my-auto px-4 py-5 bg-neutral-800 text-white rounded-3xl">
                 <h1 className="text-center font-bold text-2xl mb-3">Create an Account</h1>
                 <form onSubmit={handleSubmit} className="flex flex-col justify-center">

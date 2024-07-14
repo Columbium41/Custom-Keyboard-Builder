@@ -1,0 +1,99 @@
+'use client';
+
+import {Drawer, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay} from "@chakra-ui/modal";
+import {useDisclosure} from "@chakra-ui/hooks";
+import {Button, DrawerBody} from "@chakra-ui/react";
+import {Icon} from "@chakra-ui/icons";
+import {GoPerson} from "react-icons/go";
+import {Session} from "next-auth";
+import {LoginButton, LogoutButton, SignupButton} from "@/components/auth/auth";
+import {useRouter} from "next/navigation";
+
+interface AccountDrawerProps {
+    session: Session | null,
+    status: "authenticated" | "unauthenticated" | "loading"
+}
+
+export function AccountDrawer({ session, status }: AccountDrawerProps) {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const router = useRouter();
+
+    const handleClick = () => {
+        onOpen();
+    };
+
+    const handleUserClick = () => {
+        if (session && session.user) {
+            router.push(`/users/${encodeURIComponent(session.user.name || '')}`);
+        }
+    };
+
+    if (session && session.user) {
+        return (
+            <>
+                <Icon
+                    as={GoPerson}
+                    boxSize={"1.75em"}
+                    color="inherit"
+                    _hover={{color: "orange.300"}}
+                    onClick={handleClick}
+                />
+
+                <Drawer isOpen={isOpen} onClose={onClose} size={'sm'}>
+                    <DrawerOverlay />
+                    <DrawerContent>
+                        <DrawerCloseButton color="white" />
+                        <DrawerHeader>Account</DrawerHeader>
+                        <DrawerBody className="!p-0">
+                            <div className="w-full h-12 flex items-center border-b border-inherit px-3">
+                                <div onClick={onClose}>
+                                    <Button
+                                        color="inherit"
+                                        _hover={{
+                                            color: "orange.400",
+                                        }}
+                                        variant="link"
+                                        onClick={() => handleUserClick()}
+                                    >
+                                        {session.user.name}
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className="w-full h-12 flex items-center border-b border-inherit px-3">
+                                <div onClick={onClose}>
+                                    <LogoutButton />
+                                </div>
+                            </div>
+                        </DrawerBody>
+                    </DrawerContent>
+                </Drawer>
+            </>
+        )
+    } else {
+        return (
+            <>
+                <Icon as={GoPerson} boxSize={"1.75em"} color="inherit" _hover={{color: "orange.300"}} className={"cursor-pointer"} onClick={handleClick} />
+
+                <Drawer isOpen={isOpen} onClose={onClose} size={'sm'}>
+                    <DrawerOverlay />
+                    <DrawerContent>
+                        <DrawerCloseButton color="white" />
+                        <DrawerHeader>Account</DrawerHeader>
+                        <DrawerBody className="!p-0">
+                                <div className="w-full h-12 flex items-center border-b border-inherit px-3">
+                                    <div onClick={onClose}>
+                                        <LoginButton />
+                                    </div>
+                                </div>
+                                <div className="w-full h-12 flex items-center border-b border-inherit px-3">
+                                    <div onClick={onClose}>
+                                        <SignupButton />
+                                    </div>
+                                </div>
+                        </DrawerBody>
+                    </DrawerContent>
+                </Drawer>
+            </>
+        )
+    }
+}

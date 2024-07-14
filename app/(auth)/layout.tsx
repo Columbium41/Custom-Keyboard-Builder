@@ -13,7 +13,7 @@ export default async function AuthLayout({
 
     if (session === null) {
         return (
-            <div>
+            <div className="flex-1 flex items-center">
                 <CaptchaProvider>
                     { children }
 
