@@ -15,7 +15,10 @@ export async function PATCH(req: NextRequest) {
     }
     else if (description.length > 1000) {
         return new Response(JSON.stringify({ error: 'Description is too long' }), { status: 400 });
+    } else if (description.split('\n').length > 15) {
+        return new Response(JSON.stringify({ error: 'Description has too many lines' }), { status: 400 });
     }
+
     else {
         await prisma.user.update({
             where: {

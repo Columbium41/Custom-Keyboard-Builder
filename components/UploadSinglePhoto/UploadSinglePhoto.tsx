@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Box, Button, Input, FormControl, Image } from '@chakra-ui/react';
-import {getSignedAvatarURL} from "@/actions/getSignedAvatarURL";
+import {getSignedAvatarURL} from "@/actions/getSignedURLs";
 import {useToastContext} from "@/components/providers/ToastProvider";
 
 const computeSHA256  = async (file: File) => {

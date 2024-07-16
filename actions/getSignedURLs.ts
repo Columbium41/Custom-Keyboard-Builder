@@ -24,16 +24,16 @@ const acceptedTypes = [
     "image/gif",
 ];
 
-const maxFileSize = 1024 * 1024 * 2; // 2 MB
-
 export async function getSignedAvatarURL(type: string, size: number, checksum: string) {
+    const maxFileSize = 1024 * 1024 * 2; // 2MB
+
     try {
         // check file size and type
         if (!acceptedTypes.includes(type)) {
             return {failure: "Invalid file type"}
         }
         if (size > maxFileSize) {
-            return {failure: "Files must be under 2 MB"}
+            return {failure: "Avatar must be under 2MB"}
         }
 
         // check if user is authenticated before giving access

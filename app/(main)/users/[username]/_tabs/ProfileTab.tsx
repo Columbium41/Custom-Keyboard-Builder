@@ -54,7 +54,7 @@ export default function ProfileTab({ user, currentUser }: { user: UserIF, curren
                     <h3 className="font-semibold mb-2 text-xl">Profile</h3>
                     <Divider className="mb-3" />
                     { !editingDescription && (
-                        <div>
+                        <div className="whitespace-pre-wrap">
                             {!user.description ? "This user hasn't entered a profile description" : user.description}
                         </div>
                     )}
@@ -69,12 +69,18 @@ export default function ProfileTab({ user, currentUser }: { user: UserIF, curren
                                 value={descriptionValue}
                                 onChange={(e) => setDescriptionValue(e.target.value)}
                                 className="mb-2"
-                                isInvalid={descriptionValue.length > 1000}
+                                isInvalid={descriptionValue.length > 1000 || descriptionValue.split('\n').length > 15 }
                                 placeholder={"enter a description"}
+                                resize="none"
+                                height={120}
                             />
-                            <p className="mb-2">{ descriptionValue.length + '/1000' }</p>
+                            <div className="flex flex-row mb-2 justify-between">
+                                <p>{descriptionValue.split('\n').length + '/15 lines'}</p>
+                                <p>{descriptionValue.length + '/1000 characters'}</p>
+                            </div>
 
-                            <Button colorScheme='cyan' onClick={() => handleUpdateDescription()} className="mr-2" isLoading={isLoading}>
+                            <Button colorScheme='cyan' onClick={() => handleUpdateDescription()} className="mr-2"
+                                    isLoading={isLoading}>
                                 Save
                             </Button>
                             <Button colorScheme='cyan' variant='outline' onClick={() => setEditingDescription(false)}>
