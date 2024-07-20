@@ -1,5 +1,6 @@
 import {prisma} from "@/lib/prisma";
-import {Photo, Build} from "@prisma/client";
+import {Photo} from "@prisma/client";
+import {BuildIF} from "@/lib/build";
 
 export interface UserIF {
     id: number;
@@ -11,7 +12,7 @@ export interface UserIF {
     createdAt: Date;
     updatedAt: Date;
     avatar: Photo | null;
-    builds: Build[] | null;
+    builds: BuildIF[] | null;
 }
 
 export async function getUserData(username: string) {
@@ -29,7 +30,27 @@ export async function getUserData(username: string) {
             createdAt: true,
             updatedAt: true,
             avatar: true,
-            builds: true,
+            builds: {
+                select: {
+                    build_id: true,
+                    title: true,
+                    case: true,
+                    pcb: true,
+                    plate: true,
+                    switches: true,
+                    keycaps: true,
+                    mods: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    photos: true,
+                    user: {
+                        select: {
+                            username: true,
+                            avatar: true,
+                        },
+                    },
+                },
+            },
         },
     });
 

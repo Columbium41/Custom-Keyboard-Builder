@@ -3,10 +3,18 @@
 import {Divider, Textarea, Button} from "@chakra-ui/react";
 import UploadSinglePhoto from "@/components/UploadSinglePhoto/UploadSinglePhoto";
 import {UserIF} from "@/lib/user";
-import {useState} from "react";
+import {Dispatch, SetStateAction, useState} from "react";
 import {useToastContext} from "@/components/providers/ToastProvider";
 
-export default function ProfileTab({ user, currentUser }: { user: UserIF, currentUser: boolean }) {
+export default function ProfileTab({
+    user,
+    currentUser,
+    setTabIndex
+}: {
+    user: UserIF,
+    currentUser: boolean,
+    setTabIndex: Dispatch<SetStateAction<number>>
+}) {
     const [descriptionValue, setDescriptionValue] = useState("");
     const [editingDescription, setEditingDescription] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -39,8 +47,7 @@ export default function ProfileTab({ user, currentUser }: { user: UserIF, curren
             <div className="w-full sm:w-1/4">
                 <h3 className="font-semibold mb-2 text-xl">Completed Builds</h3>
                 <Divider className="mb-3" />
-                {/* TODO: change to link */}
-                <p className="mb-5">{ user.builds?.length }</p>
+                <p className="underline inline-block mb-5 cursor-pointer text-blue-400" onClick={() => setTabIndex(1)}>{ user.builds?.length }</p>
 
                 <h3 className="font-semibold mb-2 text-xl">Created</h3>
                 <Divider className="mb-3" />

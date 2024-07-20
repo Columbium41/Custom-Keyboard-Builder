@@ -31,7 +31,7 @@ model User {
 
 model Build {
   build_id  Int      @id @default(autoincrement())
-  kit       String   @default("") @db.VarChar(255)
+  title     String   @default("") @db.VarChar(255)
   case      String   @default("") @db.VarChar(255)
   pcb       String   @default("") @db.VarChar(255)
   plate     String   @default("") @db.VarChar(255)

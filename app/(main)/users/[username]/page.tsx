@@ -1,10 +1,9 @@
-import {Tabs, TabList, TabPanels, Tab, TabPanel} from '@chakra-ui/react'
-import ProfileTab from "@/app/(main)/users/[username]/_tabs/ProfileTab";
 import {authOptions} from "@/app/api/auth/[...nextauth]/_authOptions";
 import {getServerSession} from "next-auth";
 import { Avatar } from '@chakra-ui/react'
 import {getUserData} from "@/lib/user";
 import {notFound} from "next/navigation";
+import {UserTabs} from "@/app/(main)/users/[username]/_UserTabs";
 
 export default async function UsersPage({ params }: { params: { username: string } }) {
     const session = await getServerSession(authOptions);
@@ -30,21 +29,7 @@ export default async function UsersPage({ params }: { params: { username: string
             </div>
 
             {/* Tabs */}
-            <Tabs variant='enclosed' colorScheme="orange" align='center'>
-                <TabList>
-                    <Tab>Profile</Tab>
-                    <Tab>Builds</Tab>
-                </TabList>
-
-                <TabPanels>
-                    <TabPanel>
-                        <ProfileTab user={user} currentUser={currentUser} />
-                    </TabPanel>
-                    <TabPanel>
-                        <p>two!</p>
-                    </TabPanel>
-                </TabPanels>
-            </Tabs>
+            <UserTabs user={user} currentUser={currentUser} />
         </div>
     )
 }

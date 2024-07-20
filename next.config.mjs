@@ -14,6 +14,14 @@ const nextConfig = {
         });
 
         return config;
+    },
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: process.env.AWS_BUCKET_URL,
+            }
+        ]
     }
 };
 

@@ -5,7 +5,7 @@ import { Box, Button, Input, FormControl, Image } from '@chakra-ui/react';
 import {getSignedAvatarURL} from "@/actions/getSignedURLs";
 import {useToastContext} from "@/components/providers/ToastProvider";
 
-const computeSHA256  = async (file: File) => {
+export const computeSHA256  = async (file: File) => {
     const buffer = await file.arrayBuffer();
     const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -22,7 +22,7 @@ export default function UploadSinglePhoto() {
 
     const handleFileChange = (event: any) => {
         const file = event.target.files[0];
-        if (file && file.type.startsWith('image/')) {
+        if (file && file.type.startsWith('image/') && file.size <= 1024 * 1024 * 2) {
             setSelectedFile(file);
             setPreview(URL.createObjectURL(file));
         } else {

@@ -22,6 +22,9 @@ const config: Config = {
         'bg-light-mode': '#EDF2F7',
         'bg-dark-mode': '#1A202C',
       },
+      borderRadius: {
+        'inherit': 'inherit',
+      },
     },
   },
   plugins: [],
