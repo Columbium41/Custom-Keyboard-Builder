@@ -30,16 +30,17 @@ model User {
 }
 
 model Build {
-  build_id  Int      @id @default(autoincrement())
-  title     String   @default("") @db.VarChar(255)
-  case      String   @default("") @db.VarChar(255)
-  pcb       String   @default("") @db.VarChar(255)
-  plate     String   @default("") @db.VarChar(255)
-  switches  String   @default("") @db.VarChar(255)
-  keycaps   String   @default("") @db.VarChar(255)
-  mods      String   @default("") @db.VarChar(1000)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  build_id    Int      @id @default(autoincrement())
+  title       String   @default("") @db.VarChar(255)
+  case        String   @default("") @db.VarChar(255)
+  pcb         String   @default("") @db.VarChar(255)
+  plate       String   @default("") @db.VarChar(255)
+  switches    String   @default("") @db.VarChar(255)
+  keycaps     String   @default("") @db.VarChar(255)
+  stabilizers String   @default("") @db.VarChar(255)
+  mods        String   @default("") @db.VarChar(1000)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   userId Int
   user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)

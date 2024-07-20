@@ -2,7 +2,7 @@
 
 import {
     Box,
-    Button,
+    Button, Divider,
     FormControl,
     FormHelperText,
     FormLabel,
@@ -25,6 +25,7 @@ type FormDataType = {
     plate: string,
     switches: string,
     keycaps: string,
+    stabs: string,
     mods: string,
 }
 
@@ -55,6 +56,7 @@ export default function BuildPage() {
         plate: "",
         switches: "",
         keycaps: "",
+        stabs: "",
         mods: "",
     });
 
@@ -148,7 +150,19 @@ export default function BuildPage() {
         <form onSubmit={handleSubmitForm}>
             <Box className="my-4 p-1 mx-auto" width={['320px', '425px']} display="flex" flexDirection="column"
                  gap={2.5}>
-                <h1 className="font-semibold text-center text-2xl mb-3">Create a Build</h1>
+                <h1 className="font-semibold text-center text-2xl">Create a Build</h1>
+                <Divider orientation="horizontal" mb={1}/>
+
+                <FormControl id="title-input" isRequired>
+                    <FormLabel mb={0.5} htmlFor="title-input">Title</FormLabel>
+                    <Input
+                        type="text"
+                        value={formData.title}
+                        name="title-input"
+                        isInvalid={formData.title.length > 255}
+                        onChange={(e) => setFormData((formData) => ({...formData, title: e.target.value}))}
+                    />
+                </FormControl>
 
                 <FormControl id="thumbnail-input" isRequired>
                     <FormLabel mb={0.5}>Thumbnail</FormLabel>
@@ -175,16 +189,8 @@ export default function BuildPage() {
                     }
                 </FormControl>
 
-                <FormControl id="title-input" isRequired>
-                    <FormLabel mb={0.5} htmlFor="title-input">Title</FormLabel>
-                    <Input
-                        type="text"
-                        value={formData.title}
-                        name="title-input"
-                        isInvalid={formData.title.length > 255}
-                        onChange={(e) => setFormData((formData) => ({...formData, title: e.target.value}))}
-                    />
-                </FormControl>
+                <h2 className="font-semibold text-center text-lg">Keyboard Specs</h2>
+                <Divider orientation="horizontal" mb={1}/>
 
                 <FormControl id="case-input" isRequired>
                     <FormLabel mb={0.5} htmlFor="case-input">Case / Kit</FormLabel>
@@ -192,19 +198,9 @@ export default function BuildPage() {
                         type="text"
                         value={formData.caseValue}
                         name="case-input"
+                        placeholder="e.g. Singa Kohaku R1"
                         isInvalid={formData.caseValue.length > 255}
                         onChange={(e) => setFormData((formData) => ({...formData, caseValue: e.target.value}))}
-                    />
-                </FormControl>
-
-                <FormControl id="pcb-input" isRequired>
-                    <FormLabel mb={0.5} htmlFor="pcb-input">PCB</FormLabel>
-                    <Input
-                        type="text"
-                        value={formData.pcb}
-                        name="pcb-input"
-                        isInvalid={formData.caseValue.length > 255}
-                        onChange={(e) => setFormData((formData) => ({...formData, pcb: e.target.value}))}
                     />
                 </FormControl>
 
@@ -214,7 +210,8 @@ export default function BuildPage() {
                         type="text"
                         value={formData.plate}
                         name="plate-input"
-                        isInvalid={formData.caseValue.length > 255}
+                        placeholder="e.g. Aluminum"
+                        isInvalid={formData.plate.length > 255}
                         onChange={(e) => setFormData((formData) => ({...formData, plate: e.target.value}))}
                     />
                 </FormControl>
@@ -225,7 +222,8 @@ export default function BuildPage() {
                         type="text"
                         value={formData.switches}
                         name="switches-input"
-                        isInvalid={formData.caseValue.length > 255}
+                        placeholder="e.g. Cherry MX Browns"
+                        isInvalid={formData.switches.length > 255}
                         onChange={(e) => setFormData((formData) => ({...formData, switches: e.target.value}))}
                     />
                 </FormControl>
@@ -236,15 +234,41 @@ export default function BuildPage() {
                         type="text"
                         value={formData.keycaps}
                         name="keycaps-input"
-                        isInvalid={formData.caseValue.length > 255}
+                        placeholder="e.g. GMK Striker"
+                        isInvalid={formData.keycaps.length > 255}
                         onChange={(e) => setFormData((formData) => ({...formData, keycaps: e.target.value}))}
                     />
                 </FormControl>
 
+                <FormControl id="pcb-input">
+                    <FormLabel mb={0.5} htmlFor="pcb-input">PCB</FormLabel>
+                    <Input
+                        type="text"
+                        value={formData.pcb}
+                        name="pcb-input"
+                        isInvalid={formData.pcb.length > 255}
+                        onChange={(e) => setFormData((formData) => ({...formData, pcb: e.target.value}))}
+                    />
+                </FormControl>
+
+                <FormControl id="stabs-input">
+                    <FormLabel mb={0.5} htmlFor="stabs-input">Stabilizers</FormLabel>
+                    <Input
+                        type="text"
+                        value={formData.stabs}
+                        name="stabs-input"
+                        isInvalid={formData.stabs.length > 255}
+                        onChange={(e) => setFormData((formData) => ({...formData, stabs: e.target.value}))}
+                    />
+                </FormControl>
+
+                <h2 className="font-semibold text-center text-lg">Additional Info</h2>
+                <Divider orientation="horizontal" mb={1}/>
+
                 <FormControl id="mods-input">
-                    <FormLabel mb={0.5} htmlFor="mods-input">Mods / Additional Info</FormLabel>
+                    <FormLabel mb={0.5} htmlFor="mods-input">Description / Mods</FormLabel>
                     <Textarea
-                        placeholder="20 layer tape mod..."
+                        placeholder="e.g. 20 layer tape mod..."
                         resize="none"
                         height={120}
                         paddingX={2}

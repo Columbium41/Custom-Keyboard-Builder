@@ -4,7 +4,7 @@ import {authOptions} from "@/app/api/auth/[...nextauth]/_authOptions";
 import {prisma} from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
-    const { title, caseValue, pcb, plate, switches, keycaps, mods } = await req.json();
+    const { title, caseValue, pcb, plate, switches, keycaps, mods, stabs } = await req.json();
 
     // ensure user is authenticated
     const session = await getServerSession(authOptions);
@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
                 plate: plate,
                 switches: switches,
                 keycaps: keycaps,
+                stabilizers: stabs,
                 mods: mods,
                 userId: Number(session.user.id),
             }

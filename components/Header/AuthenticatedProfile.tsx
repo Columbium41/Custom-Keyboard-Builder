@@ -3,12 +3,10 @@
 import {Button, Divider, useColorMode, useColorModeValue} from "@chakra-ui/react";
 import {LogoutButton} from "@/components/auth/auth";
 import {MoonIcon, SunIcon} from "@chakra-ui/icons";
-import {useRouter} from "next/navigation";
 import {Session} from "next-auth";
 import Link from "next/link";
 
 export function AuthenticatedProfile({ session }: { session: Session }) {
-    const router = useRouter();
     const { colorMode, toggleColorMode } = useColorMode();
     const dividerBGs = useColorModeValue('whiteAlpha.600', 'whiteAlpha.700');
 
