@@ -9,7 +9,7 @@ import {
     IconButton,
     Image,
     Input,
-    Textarea
+    Textarea, useColorMode
 } from "@chakra-ui/react";
 import {useState} from "react";
 import {useToastContext} from "@/components/providers/ToastProvider";
@@ -69,6 +69,7 @@ export default function BuildPage() {
     const [isButtonLoading, setIsButtonLoading] = useState(false);
     const { showToast } = useToastContext();
     const router = useRouter();
+    const { colorMode } = useColorMode();
 
     const handleThumbnailChange = (event: any) => {
         const file = event.target.files[0];
@@ -159,6 +160,7 @@ export default function BuildPage() {
                         type="text"
                         value={formData.title}
                         name="title-input"
+                        className={(colorMode === 'light' ? '!border-neutral-700' : '!border-neutral-400')}
                         isInvalid={formData.title.length > 255}
                         onChange={(e) => setFormData((formData) => ({...formData, title: e.target.value}))}
                     />
@@ -198,6 +200,7 @@ export default function BuildPage() {
                         type="text"
                         value={formData.caseValue}
                         name="case-input"
+                        className={(colorMode === 'light' ? '!border-neutral-700' : '!border-neutral-400')}
                         placeholder="e.g. Singa Kohaku R1"
                         isInvalid={formData.caseValue.length > 255}
                         onChange={(e) => setFormData((formData) => ({...formData, caseValue: e.target.value}))}
@@ -210,6 +213,7 @@ export default function BuildPage() {
                         type="text"
                         value={formData.plate}
                         name="plate-input"
+                        className={(colorMode === 'light' ? '!border-neutral-700' : '!border-neutral-400')}
                         placeholder="e.g. Aluminum"
                         isInvalid={formData.plate.length > 255}
                         onChange={(e) => setFormData((formData) => ({...formData, plate: e.target.value}))}
@@ -222,6 +226,7 @@ export default function BuildPage() {
                         type="text"
                         value={formData.switches}
                         name="switches-input"
+                        className={(colorMode === 'light' ? '!border-neutral-700' : '!border-neutral-400')}
                         placeholder="e.g. Cherry MX Browns"
                         isInvalid={formData.switches.length > 255}
                         onChange={(e) => setFormData((formData) => ({...formData, switches: e.target.value}))}
@@ -234,6 +239,7 @@ export default function BuildPage() {
                         type="text"
                         value={formData.keycaps}
                         name="keycaps-input"
+                        className={(colorMode === 'light' ? '!border-neutral-700' : '!border-neutral-400')}
                         placeholder="e.g. GMK Striker"
                         isInvalid={formData.keycaps.length > 255}
                         onChange={(e) => setFormData((formData) => ({...formData, keycaps: e.target.value}))}
@@ -246,6 +252,7 @@ export default function BuildPage() {
                         type="text"
                         value={formData.pcb}
                         name="pcb-input"
+                        className={(colorMode === 'light' ? '!border-neutral-700' : '!border-neutral-400')}
                         isInvalid={formData.pcb.length > 255}
                         onChange={(e) => setFormData((formData) => ({...formData, pcb: e.target.value}))}
                     />
@@ -257,6 +264,7 @@ export default function BuildPage() {
                         type="text"
                         value={formData.stabs}
                         name="stabs-input"
+                        className={(colorMode === 'light' ? '!border-neutral-700' : '!border-neutral-400')}
                         isInvalid={formData.stabs.length > 255}
                         onChange={(e) => setFormData((formData) => ({...formData, stabs: e.target.value}))}
                     />
@@ -275,6 +283,7 @@ export default function BuildPage() {
                         isInvalid={formData.mods.length > 1000 || formData.mods.split('\n').length > 15}
                         value={formData.mods}
                         name="mods-input"
+                        className={(colorMode === 'light' ? '!border-neutral-700' : '!border-neutral-400')}
                         onChange={(e) => setFormData((formData) => ({...formData, mods: e.target.value}))}
                     />
                     <Box display="flex" flexDirection="row" justifyContent="space-between">
