@@ -2,39 +2,73 @@ import {NextRequest} from "next/server";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/api/auth/[...nextauth]/_authOptions";
 import {prisma} from "@/lib/prisma";
+import axios from "axios";
+
+const isValidYouTubeVideo = async (url: string) => {
+    const apiKey = process.env.YOUTUBE_API_KEY;
+    const videoId = extractVideoId(url);
+    if (!videoId) {
+        return false;
+    }
+
+    const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=id`;
+
+    try {
+        const response = await axios.get(apiUrl);
+        return response.data.items.length > 0;
+    } catch (error) {
+        console.error('Error validating YouTube video:', error);
+        return false;
+    }
+};
+
+const extractVideoId = (url: string) => {
+    const match = url.match(
+        /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    );
+    return match ? match[1] : null;
+};
 
 export async function POST(req: NextRequest) {
-    const { title, caseValue, pcb, plate, switches, keycaps, mods, stabs } = await req.json();
+    const { title, caseValue, pcb, plate, switches, keycaps, mods, stabs, youtube_link } = await req.json();
 
     // ensure user is authenticated
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {
         return new Response(JSON.stringify({ error: 'Not authenticated' }), { status: 400 });
-    } else if (!title || !caseValue || !pcb || !plate || !switches || !keycaps) {
+    } else if (!title || !caseValue || !plate || !switches || !keycaps) {
         return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
-    } else if (title.length > 255 || caseValue.length > 255 || pcb.length > 255 || plate.length > 255 || switches.length > 255 || keycaps.length > 255) {
+    } else if (title.length > 255 || caseValue.length > 255 || pcb.length > 255 || plate.length > 255 || switches.length > 255 || keycaps.length > 255 || stabs.length > 255) {
         return new Response(JSON.stringify({ error: 'Fields are too long' }), { status: 400 });
     } else if (mods.length > 1000) {
         return new Response(JSON.stringify({ error: 'Mods is too long' }), { status: 400 });
     } else if (mods.split('\n').length > 15) {
         return new Response(JSON.stringify({ error: 'Mods has too many lines' }), { status: 400 });
     } else {
-        // create build metadata in database
-        const build = await prisma.build.create({
-            data: {
-                title: title,
-                case: caseValue,
-                pcb: pcb,
-                plate: plate,
-                switches: switches,
-                keycaps: keycaps,
-                stabilizers: stabs,
-                mods: mods,
-                userId: Number(session.user.id),
-            }
-        });
+        // check if youtube link is valid
+        const validLink = await isValidYouTubeVideo(youtube_link);
 
-        return new Response(JSON.stringify({ message: 'Successfully created build', buildId: build.build_id }), { status: 200 });
+        if (!validLink) {
+            return new Response(JSON.stringify({ error: 'Invalid YouTube Link' }), { status: 400 });
+        } else {
+            // create build metadata in database
+            const build = await prisma.build.create({
+                data: {
+                    title: title,
+                    case: caseValue,
+                    pcb: pcb,
+                    plate: plate,
+                    switches: switches,
+                    keycaps: keycaps,
+                    stabilizers: stabs,
+                    mods: mods,
+                    youtubeLink: youtube_link,
+                    userId: Number(session.user.id),
+                }
+            });
+
+            return new Response(JSON.stringify({ message: 'Successfully created build', buildId: build.build_id }), { status: 200 });
+        }
     }
 }
