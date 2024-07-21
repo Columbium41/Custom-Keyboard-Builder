@@ -27,6 +27,7 @@ type FormDataType = {
     keycaps: string,
     stabs: string,
     mods: string,
+    youtube_link: string,
 }
 
 async function createPhoto(photo: File, isThumbnail: boolean, buildId: number) {
@@ -58,6 +59,7 @@ export default function BuildPage() {
         keycaps: "",
         stabs: "",
         mods: "",
+        youtube_link: "",
     });
 
     const [thumbnail, setThumbnail] = useState<File | null>(null);
@@ -331,6 +333,18 @@ export default function BuildPage() {
                             </div>
                         ))}
                     </div>
+                </FormControl>
+
+                <FormControl id="youtube-link-input">
+                    <FormLabel mb={0.5} htmlFor="youtube-link-input">Youtube Link</FormLabel>
+                    <Input
+                        type="text"
+                        value={formData.youtube_link}
+                        name="youtube-link-input"
+                        className={(colorMode === 'light' ? '!border-neutral-700' : '!border-neutral-400')}
+                        isInvalid={formData.youtube_link.length > 255}
+                        onChange={(e) => setFormData((formData) => ({...formData, youtube_link: e.target.value}))}
+                    />
                 </FormControl>
 
                 <Button

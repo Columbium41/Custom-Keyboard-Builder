@@ -39,6 +39,7 @@ model Build {
   keycaps     String   @default("") @db.VarChar(255)
   stabilizers String   @default("") @db.VarChar(255)
   mods        String   @default("") @db.VarChar(1000)
+  youtubeLink String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
