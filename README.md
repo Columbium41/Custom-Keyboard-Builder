@@ -19,6 +19,7 @@ build and configure their own custom keyboards and share them with other users.
 - [BCrypt](https://github.com/kelektiv/node.bcrypt.js#readme) (Password Hashing)
 - [Nodemailer](https://www.nodemailer.com/) (Email Sending)
 - [Google ReCaptcha](https://www.google.com/recaptcha/about/) (Bot Prevention)
+- [Youtube Data API V3](https://developers.google.com/youtube/v3) (Youtube Link Validation)
 
 ### Deployment & Data Storage
 - [Vercel](https://vercel.com) (Deployment)
