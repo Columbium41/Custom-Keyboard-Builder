@@ -4,7 +4,7 @@ import NavigationSearch from "@/components/NavigationSearch/NavigationSearch";
 import "@/components/Header/Header.css";
 
 export const navigationLinks = [
-    { name: "Build", to: "/build" },
+    { name: "Build", to: "/builds/new" },
     { name: "User Builds", to: "/builds" }
 ];
 
@@ -17,7 +17,7 @@ export default function Navigation() {
                     <Link href={link.to} key={index}
                           className="flex h-full my-auto transition-colors duration-150 hover:text-orange-300">
                         <div className="w-14 h-5/6 relative mr-1.5 my-auto">
-                            <LazySVG name={link.to.substring(1)} className="w-full h-full fill-current stroke-current"/>
+                            <LazySVG name={link.to.replaceAll('/', '')} className="w-full h-full fill-current stroke-current"/>
                         </div>
                         <h4 className="my-auto mr-2">
                             {link.name}
