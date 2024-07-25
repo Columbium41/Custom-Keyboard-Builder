@@ -30,7 +30,7 @@ type FormDataType = {
     youtube_link: string,
 }
 
-async function createPhoto(photo: File, isThumbnail: boolean, buildId: number) {
+async function createPhoto(photo: File, isThumbnail: boolean, buildId: string) {
     const checksum = await computeSHA256(photo);
     const signedURLResult = await getSignedBuildPhotoURL(buildId, isThumbnail, photo.type, photo.size, checksum);
 
@@ -135,7 +135,7 @@ export default function BuildPage() {
             await createPhoto(thumbnail, true, buildId);
 
             // create photos
-            for (var i = 0; i < photos.length; i++) {
+            for (let i = 0; i < photos.length; i++) {
                 const photo = photos[i];
                 await createPhoto(photo, false, buildId);
             }

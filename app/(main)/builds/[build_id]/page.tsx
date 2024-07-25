@@ -2,11 +2,12 @@ import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/api/auth/[...nextauth]/_authOptions";
 import {notFound} from "next/navigation";
 import {getBuildData} from "@/lib/build";
-import {Avatar, Divider, Grid, Box, AspectRatio} from "@chakra-ui/react";
+import {Avatar, Divider, Grid, AspectRatio} from "@chakra-ui/react";
 import Link from "next/link";
 import SimpleGallery from "@/components/SimpleGallery/SimpleGallery";
+import {BuildPageActionButtons} from "@/app/(main)/builds/[build_id]/_actionButtons";
 
-export default async function BuildsPage({ params }: { params: { build_id: number } }) {
+export default async function BuildsPage({ params }: { params: { build_id: string } }) {
     const session = await getServerSession(authOptions);
     const build = await getBuildData(params.build_id);
 
@@ -19,24 +20,29 @@ export default async function BuildsPage({ params }: { params: { build_id: numbe
     return (
         <div className="pb-8">
             { /* Build Header */}
-            <div className="bg-neutral-600 text-white text-center py-4 flex flex-col gap-1.5">
-                <h2 className="text-xl text-neutral-100">Build</h2>
-                <h1 className="text-2xl font-semibold">{ build.title }</h1>
-                <div className="flex flex-row gap-1.5 items-center mx-auto justify-center">
-                    by
-                    { build.user.avatar === null ?
-                        <Avatar src={"/public/profile.svg"} size="sm" /> :
-                        <Avatar src={build.user.avatar.fileURL} size="sm" />
-                    }
-                    <Link
-                        href={`/users/${encodeURIComponent(build.user.username)}`}
-                        className="!text-blue-400 hover:!underline"
-                    >{ build.user.username }</Link>
+            <div className="relative bg-neutral-600">
+                {/* Actions */}
+                { currentUser && <BuildPageActionButtons buildId={build.build_id} /> }
+                <div className="text-white text-center py-4 flex flex-col gap-1.5">
+                    <h2 className="text-xl text-neutral-100">Build</h2>
+                    <h1 className="text-2xl font-semibold">{build.title}</h1>
+                    <div className="flex flex-row gap-1.5 items-center mx-auto justify-center">
+                        by
+                        {build.user.avatar === null ?
+                            <Avatar size="sm"/> :
+                            <Avatar src={build.user.avatar.fileURL} size="sm"/>
+                        }
+                        <Link
+                            href={`/users/${encodeURIComponent(build.user.username)}`}
+                            className="!text-blue-400 hover:!underline"
+                        >{build.user.username}</Link>
+                    </div>
                 </div>
             </div>
 
+
             {/* Youtube Embed */}
-            { build.youtubeLink && (
+            {build.youtubeLink && (
                 <AspectRatio
                     position="relative"
                     maxW={{

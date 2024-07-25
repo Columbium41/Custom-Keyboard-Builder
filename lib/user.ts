@@ -39,6 +39,8 @@ export async function getUserData(username: string) {
                     plate: true,
                     switches: true,
                     keycaps: true,
+                    stabilizers: true,
+                    youtubeLink: true,
                     mods: true,
                     createdAt: true,
                     updatedAt: true,

@@ -30,7 +30,7 @@ model User {
 }
 
 model Build {
-  build_id    Int      @id @default(autoincrement())
+  build_id    String   @id @default(cuid())
   title       String   @default("") @db.VarChar(255)
   case        String   @default("") @db.VarChar(255)
   pcb         String   @default("") @db.VarChar(255)
@@ -57,8 +57,8 @@ model Photo {
   isThumbnail Boolean  @default(false)
   createdAt   DateTime @default(now())
 
-  userId  Int?   @unique
-  user    User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  buildId Int?
-  build   Build? @relation(fields: [buildId], references: [build_id], onDelete: Cascade)
+  userId  Int?    @unique
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  buildId String?
+  build   Build?  @relation(fields: [buildId], references: [build_id], onDelete: Cascade)
 }

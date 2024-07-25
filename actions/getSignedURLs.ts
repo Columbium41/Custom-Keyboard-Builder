@@ -2,20 +2,13 @@
 
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/api/auth/[...nextauth]/_authOptions";
-import {S3Client, PutObjectCommand, DeleteObjectCommand} from "@aws-sdk/client-s3";
+import {PutObjectCommand, DeleteObjectCommand} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import crypto from "crypto";
 import {prisma} from "@/lib/prisma";
+import s3 from "@/lib/s3client";
 
 const generateFileName = (bytes = 32) => crypto.randomBytes(bytes).toString("hex");
-
-const s3 = new S3Client({
-    region: process.env.AWS_BUCKET_REGION!,
-    credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-    },
-});
 
 const acceptedTypes = [
     "image/jpeg",
@@ -102,7 +95,7 @@ export async function getSignedAvatarURL(type: string, size: number, checksum: s
     }
 }
 
-export async function getSignedBuildPhotoURL(buildId: number, isThumbnail: boolean, type: string, size: number, checksum: string) {
+export async function getSignedBuildPhotoURL(buildId: string, isThumbnail: boolean, type: string, size: number, checksum: string) {
     const maxFileSize = 1024 * 1024 * 5; // 5MB
 
     try {

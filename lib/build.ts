@@ -2,7 +2,7 @@ import {Photo} from "@prisma/client";
 import {prisma} from "@/lib/prisma";
 
 export interface BuildIF {
-    build_id: number,
+    build_id: string,
     title: string,
     case: string,
     pcb: string,
@@ -10,7 +10,7 @@ export interface BuildIF {
     switches: string,
     keycaps: string,
     stabilizers: string,
-    youtubeLink: string,
+    youtubeLink: string | null,
     mods: string,
     createdAt: Date,
     updatedAt: Date,
@@ -31,10 +31,10 @@ export const getImageDimensions = (src: string): Promise<{ width: number; height
     });
 };
 
-export async function getBuildData(build_id: number) {
+export async function getBuildData(build_id: string) {
     const build = await prisma.build.findUnique({
         where: {
-            build_id: Number(build_id),
+            build_id: build_id,
         },
         select: {
             build_id: true,

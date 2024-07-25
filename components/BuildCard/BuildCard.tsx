@@ -36,7 +36,7 @@ export function BuildCard({ build }: { build : BuildIF }) {
             <div className={"rounded-b-inherit px-2 py-2 text-start " + (colorMode === 'light' ? 'bg-neutral-100 text-black' : 'bg-neutral-700 text-white')}>
                 <div className="flex flex-row items-center gap-2 px-1">
                     { build.user.avatar === null ?
-                        <Avatar src={"/public/profile.svg"} size="sm" /> :
+                        <Avatar size="sm" /> :
                         <Avatar src={build.user.avatar.fileURL} size="sm" />
                     }
                     <Link

@@ -22,7 +22,7 @@ export default async function UsersPage({ params }: { params: { username: string
             {/* User Avatar */}
             <div className="flex items-center justify-center gap-3">
                 { user.avatar === null ?
-                    <Avatar src={"/public/profile.svg"} className="text-center !w-20 !h-20" showBorder={true} /> :
+                    <Avatar className="text-center !w-20 !h-20" showBorder={true} /> :
                     <Avatar src={user.avatar.fileURL} className="text-center !w-20 !h-20" showBorder={true} />
                 }
                 <p className="font-semibold text-xl">{ user.username }</p>

@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
         // check if youtube link is valid
         const validLink = await isValidYouTubeVideo(youtube_link);
 
-        if (validLink === "") {
+        if (youtube_link && validLink === "") {
             return new Response(JSON.stringify({ error: 'Invalid YouTube Link' }), { status: 400 });
         } else {
             // create build metadata in database
