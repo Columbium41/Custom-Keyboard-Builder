@@ -8,17 +8,19 @@ const isValidYouTubeVideo = async (url: string) => {
     const apiKey = process.env.YOUTUBE_API_KEY;
     const videoId = extractVideoId(url);
     if (!videoId) {
-        return false;
+        return "";
     }
 
     const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=id`;
 
     try {
         const response = await axios.get(apiUrl);
-        return response.data.items.length > 0;
+        if (response.data.items.length > 0) {
+            return videoId;
+        }
     } catch (error) {
         console.error('Error validating YouTube video:', error);
-        return false;
+        return "";
     }
 };
 
@@ -49,7 +51,7 @@ export async function POST(req: NextRequest) {
         // check if youtube link is valid
         const validLink = await isValidYouTubeVideo(youtube_link);
 
-        if (!validLink) {
+        if (validLink === "") {
             return new Response(JSON.stringify({ error: 'Invalid YouTube Link' }), { status: 400 });
         } else {
             // create build metadata in database
@@ -63,7 +65,7 @@ export async function POST(req: NextRequest) {
                     keycaps: keycaps,
                     stabilizers: stabs,
                     mods: mods,
-                    youtubeLink: youtube_link,
+                    youtubeLink: validLink,
                     userId: Number(session.user.id),
                 }
             });

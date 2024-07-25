@@ -1,6 +1,6 @@
 'use client';
 
-import {Box} from "@chakra-ui/react";
+import {Box, Grid} from "@chakra-ui/react";
 import {UserIF} from "@/lib/user";
 import {BuildCard} from "@/components/BuildCard/BuildCard";
 
@@ -19,12 +19,20 @@ export default function BuildsTab({
         return (
             <Box>
                 <h1 className="text-center text-xl font-semibold mb-4">User Builds</h1>
-                <Box display="flex" flexDirection="row" flexWrap="wrap" gap={3}>
+                <Grid
+                    templateColumns={{
+                        base: "repeat(1, 1fr)",
+                        sm: "repeat(2, 1fr)",
+                        lg: "repeat(3, 1fr)",
+                        xl: "repeat(4, 1fr)",
+                    }}
+                    gap={3}
+                >
                     { user.builds.map((build, index) => (
                         // @ts-ignore
                         <BuildCard build={build} key={index} />
                     )) }
-                </Box>
+                </Grid>
             </Box>
         )
     }

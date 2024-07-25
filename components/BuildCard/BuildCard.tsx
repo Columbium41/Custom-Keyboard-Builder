@@ -5,12 +5,21 @@ import Image from "next/image";
 import {BuildIF} from "@/lib/build";
 import Link from "next/link";
 import {Avatar, useColorMode} from "@chakra-ui/react";
+import {useRouter} from "next/navigation";
 
 export function BuildCard({ build }: { build : BuildIF }) {
     const { colorMode } = useColorMode();
+    const router = useRouter();
+
+    const handleClick = () => {
+        router.push(`/builds/${build.build_id}`);
+    };
 
     return (
-        <div className="w-1/4 rounded-t-lg rounded-b-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out cursor-pointer">
+        <div
+            className="w-full rounded-t-lg rounded-b-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out cursor-pointer"
+            onClick={handleClick}
+        >
             {/* Build thumbnail */}
             <div className="relative h-60 rounded-t-inherit">
                 <Image
@@ -19,7 +28,7 @@ export function BuildCard({ build }: { build : BuildIF }) {
                     alt={"Build Thumbnail"}
                     fill
                     className="object-cover !rounded-t-inherit"
-                    sizes="(max-width: 768px) 25vw"
+                    sizes="(max-width: 480px) 100vw, (max-width: 992px) 50vw, (max-width: 1280px) 33vw, 25vw"
                 />
             </div>
 

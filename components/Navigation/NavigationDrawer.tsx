@@ -37,7 +37,7 @@ export function NavigationDrawer() {
                                     <div className={"w-1/5 relative p-1"}>
                                         <div className={"w-full h-full relative"}>
                                             <Image
-                                                src={`/${link.to.substring(1)}.svg`}
+                                                src={`/${link.to.replaceAll('/', '')}.svg`}
                                                 alt={''}
                                                 fill
                                                 className="object-contain"
