@@ -70,8 +70,7 @@ export default async function BuildsPage({ params }: { params: { build_id: numbe
             <Grid
                 templateColumns={{
                     base: "repeat(1, 1fr)",
-                    sm: "repeat(2, 1fr)",
-                    xl: "repeat(3, 1fr)",
+                    sm: "repeat(3, 1fr)",
                 }}
                 gap={4}
                 paddingX={5}
