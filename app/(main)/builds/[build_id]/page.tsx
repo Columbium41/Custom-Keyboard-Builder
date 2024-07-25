@@ -19,7 +19,7 @@ export default async function BuildsPage({ params }: { params: { build_id: numbe
     return (
         <div className="pb-8">
             { /* Build Header */}
-            <div className="bg-neutral-600 text-white text-center py-4 flex flex-col gap-1.5 mb-3">
+            <div className="bg-neutral-600 text-white text-center py-4 flex flex-col gap-1.5">
                 <h2 className="text-xl text-neutral-100">Build</h2>
                 <h1 className="text-2xl font-semibold">{ build.title }</h1>
                 <div className="flex flex-row gap-1.5 items-center mx-auto justify-center">
@@ -45,7 +45,7 @@ export default async function BuildsPage({ params }: { params: { build_id: numbe
                         lg: "30%",
                     }}
                     ratio={16 / 9}
-                    className="!mx-auto"
+                    className="!mx-auto !mt-3"
                 >
                     <iframe
                         src={`https://www.youtube.com/embed/${build.youtubeLink}`}
