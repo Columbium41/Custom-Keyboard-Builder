@@ -1,55 +1,22 @@
 'use client';
 
+import {useEffect, useState} from "react";
+import {FormDataType} from "@/app/(main)/builds/new/page";
 import {
     Box,
-    Button, Divider,
+    Button,
+    Divider,
     FormControl,
     FormHelperText,
     FormLabel,
-    IconButton,
-    Image,
     Input,
     Textarea, useColorMode
 } from "@chakra-ui/react";
-import {useState} from "react";
 import {useToastContext} from "@/components/providers/ToastProvider";
-import {SmallCloseIcon} from "@chakra-ui/icons";
-import {getSignedBuildPhotoURL} from "@/actions/getSignedURLs";
-import {computeSHA256} from "@/components/UploadSinglePhoto/UploadSinglePhoto";
 import {useRouter} from "next/navigation";
+import {BuildIF} from "@/lib/build";
 
-export type FormDataType = {
-    title: string,
-    caseValue: string,
-    pcb: string,
-    plate: string,
-    switches: string,
-    keycaps: string,
-    stabs: string,
-    mods: string,
-    youtube_link: string,
-}
-
-async function createPhoto(photo: File, isThumbnail: boolean, buildId: string) {
-    const checksum = await computeSHA256(photo);
-    const signedURLResult = await getSignedBuildPhotoURL(buildId, isThumbnail, photo.type, photo.size, checksum);
-
-    // error when creating thumbnail
-    if (signedURLResult.failure !== undefined) {
-        throw new Error('Error when creating photos, please try again later');
-    }
-
-    const thumbnailURL = signedURLResult.success.url;
-    await fetch(thumbnailURL, {
-        method: "PUT",
-        body: photo,
-        headers: {
-            "Content-Type": photo.type,
-        },
-    });
-}
-
-export default function BuildPage() {
+export function EditBuildForm({ build }: { build: BuildIF }) {
     const [formData, setFormData] = useState<FormDataType>({
         title: "",
         caseValue: "",
@@ -62,85 +29,30 @@ export default function BuildPage() {
         youtube_link: "",
     });
 
-    const [thumbnail, setThumbnail] = useState<File | null>(null);
-    const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
-
-    const [photos, setPhotos] = useState<File[]>([]);
-    const [photosPreview, setPhotosPreview] = useState<string[]>([]);
-
     const [isButtonLoading, setIsButtonLoading] = useState(false);
     const { showToast } = useToastContext();
     const router = useRouter();
     const { colorMode } = useColorMode();
-
-    const handleThumbnailChange = (event: any) => {
-        const file = event.target.files[0];
-
-        if (file && file.type.startsWith('image/') && file.size <= 1024 * 1024 * 5) {
-            setThumbnail(file);
-            setThumbnailPreview(URL.createObjectURL(file));
-        } else {
-            showToast('Please select a valid image file', {}, 'error');
-        }
-    };
-
-    const handlePhotoChange = (event: any) => {
-        const newFile = event.target.files[event.target.files.length - 1];
-
-        if (photos.length >= 4) {
-            showToast('Too many photos', {}, 'error');
-        } else if (newFile && newFile.type.startsWith('image/') && newFile.size <= 1024 * 1024 * 5) {
-            const newFilePreview = URL.createObjectURL(newFile);
-
-            setPhotos((photos) => ([...photos, newFile]));
-            setPhotosPreview((photosPreview) => ([...photosPreview, newFilePreview]));
-        } else {
-            showToast('Please select a valid image file', {}, 'error');
-        }
-    };
-
-    const handlePhotoRemove = (index: number) => {
-        setPhotos(photos.filter((_, idx) => idx !== index));
-        setPhotosPreview(photosPreview.filter((_, idx) => idx !== index));
-    }
 
     const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         setIsButtonLoading(true);
 
-        if (!thumbnail) {
-            showToast('Thumbnail not present', {}, 'error');
-            return;
-        }
-        if (photos && photos.length > 4) {
-            showToast('You have too many photos', {}, 'error');
-            return;
-        }
-
         // create build
-        const res = await fetch('/api/builds/new', {
-            method: 'POST',
+        const res = await fetch('/api/builds/edit', {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify({ ...formData, build_id: build.build_id })
         });
 
         const data = await res.json();
         if (res.ok) {
             const buildId = data.buildId;
 
-            // create thumbnail
-            await createPhoto(thumbnail, true, buildId);
-
-            // create photos
-            for (let i = 0; i < photos.length; i++) {
-                const photo = photos[i];
-                await createPhoto(photo, false, buildId);
-            }
-
-            showToast('Successfully created build', {}, 'success');
+            showToast('Successfully updated build', {}, 'success');
             router.push(`/builds/${buildId}`);
         } else {
             showToast(data.error, {}, 'error');
@@ -149,11 +61,27 @@ export default function BuildPage() {
         setIsButtonLoading(false);
     }
 
+    // get build data
+    useEffect(() => {
+        // set build data
+        setFormData({
+            title: build.title,
+            caseValue: build.case,
+            pcb: build.pcb,
+            plate: build.plate,
+            switches: build.switches,
+            keycaps: build.keycaps,
+            stabs: build.stabilizers,
+            mods: build.mods,
+            youtube_link: (build.youtubeLink ? `https://www.youtube.com/watch?v=${build.youtubeLink}` : ""),
+        });
+    }, [build]);
+
     return (
         <form onSubmit={handleSubmitForm}>
             <Box className="my-4 p-1 mx-auto" width={['320px', '425px']} display="flex" flexDirection="column"
                  gap={2.5}>
-                <h1 className="font-semibold text-center text-2xl">Create a Build</h1>
+                <h1 className="font-semibold text-center text-2xl">Edit Build</h1>
                 <Divider orientation="horizontal" mb={1}/>
 
                 <FormControl id="title-input" isRequired>
@@ -166,31 +94,6 @@ export default function BuildPage() {
                         isInvalid={formData.title.length > 255}
                         onChange={(e) => setFormData((formData) => ({...formData, title: e.target.value}))}
                     />
-                </FormControl>
-
-                <FormControl id="thumbnail-input" isRequired>
-                    <FormLabel mb={0.5}>Thumbnail</FormLabel>
-                    <Input
-                        type="file"
-                        accept="image/jpeg, image/png, image/gif, image/webp"
-                        display="none"
-                        onChange={handleThumbnailChange}
-                        name="thumbnail-input"
-                    />
-                    <Button as="label" htmlFor="thumbnail-input" cursor="pointer" colorScheme='blue'>
-                        Choose Image
-                    </Button>
-                    <FormHelperText className="!text-inherit">Max File Size: 5MB</FormHelperText>
-                    {thumbnailPreview &&
-                        (<Image
-                            src={thumbnailPreview}
-                            alt="Thumbnail Preview"
-                            maxWidth="150px"
-                            maxHeight="150px"
-                            objectFit="contain"
-                            className="!mx-auto"
-                        />)
-                    }
                 </FormControl>
 
                 <h2 className="font-semibold text-center text-lg">Keyboard Specs</h2>
@@ -296,45 +199,6 @@ export default function BuildPage() {
                     </Box>
                 </FormControl>
 
-                <FormControl id="photos-input">
-                    <FormLabel mb={0.5} htmlFor="photos-input">Additional Photos (up to 4)</FormLabel>
-                    <Input
-                        type="file"
-                        accept="image/jpeg, image/png, image/gif, image/webp"
-                        display="none"
-                        name="photos-input"
-                        onChange={handlePhotoChange}
-                    />
-                    <Button as="label" htmlFor="photos-input" cursor="pointer" colorScheme='blue'>
-                        Choose Images
-                    </Button>
-                    <FormHelperText className="!text-inherit">Max File Size: 5MB (each)</FormHelperText>
-                    <div className="w-full flex flex-row flex-wrap justify-start gap-3 mt-4">
-                        {photosPreview.length > 0 && photosPreview.map((photo, index) => (
-                            <div key={index} className="relative inline-block">
-                                <Image
-                                    src={photo}
-                                    alt={`Image #${index} Preview`}
-                                    maxWidth="100px"
-                                    maxHeight="100px"
-                                    objectFit="contain"
-                                />
-                                <IconButton
-                                    icon={<SmallCloseIcon/>}
-                                    size="xs"
-                                    position="absolute"
-                                    top="-2"
-                                    right="-2"
-                                    aria-label={`remove-#${index}`}
-                                    bg={"red.400"}
-                                    _hover={{bg: "red.500"}}
-                                    onClick={() => handlePhotoRemove(index)}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </FormControl>
-
                 <FormControl id="youtube-link-input">
                     <FormLabel mb={0.5} htmlFor="youtube-link-input">Youtube Link</FormLabel>
                     <Input
@@ -355,7 +219,7 @@ export default function BuildPage() {
                     className="!mx-auto"
                     isLoading={isButtonLoading}
                 >
-                    Create
+                    Update
                 </Button>
             </Box>
         </form>
