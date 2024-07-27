@@ -31,7 +31,11 @@ export default function BuildsTab({
                 >
                     { user.builds.map((build, index) => (
                         // @ts-ignore
-                        <BuildCard build={build} key={index} />
+                        <BuildCard
+                            build={build}
+                            key={index}
+                            liked={user.likes.filter((like) => like.buildId === build.build_id).length > 0}
+                        />
                     )) }
                 </Grid>
             </Box>

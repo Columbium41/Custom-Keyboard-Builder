@@ -9,7 +9,7 @@ import {useRouter} from "next/navigation";
 import {Icon} from "@chakra-ui/icons";
 import {IoHeart} from "react-icons/io5";
 
-export function BuildCard({ build }: { build : BuildIF }) {
+export function BuildCard({ build, liked }: { build : BuildIF, liked?: boolean }) {
     const { colorMode } = useColorMode();
     const router = useRouter();
 
@@ -51,7 +51,7 @@ export function BuildCard({ build }: { build : BuildIF }) {
                             className="!text-blue-400 hover:!underline"
                         >{ build.user.username }</Link>
                     </div>
-                    <div className="flex flex-row items-center gap-1.5">
+                    <div className={`flex flex-row items-center gap-1.5 ` + (liked ? "text-pink-500" : "")}>
                         <Icon
                             as={IoHeart}
                             color="inherit"
