@@ -12,6 +12,7 @@ build and configure their own custom keyboards and share them with other users.
 - [Chakra UI](https://v2.chakra-ui.com/) (Component Library)
 - [Axios](https://axios-http.com/) (Data Fetching)
 - [React Hot Toast](https://react-hot-toast.com/) (Notifications)
+- [photoswipe](https://photoswipe.com/) (Photo Gallery)
 
 ### Backend
 - [Next Auth](https://next-auth.js.org/) (Session Handling)

@@ -1,4 +1,4 @@
-import {Photo} from "@prisma/client";
+import {Like, Photo} from "@prisma/client";
 import {prisma} from "@/lib/prisma";
 
 export interface BuildIF {
@@ -19,6 +19,7 @@ export interface BuildIF {
         username: string,
         avatar: Photo | null,
     },
+    likes: Like[],
 }
 
 export const getImageDimensions = (src: string): Promise<{ width: number; height: number }> => {
@@ -56,6 +57,7 @@ export async function getBuildData(build_id: string) {
                     avatar: true,
                 },
             },
+            likes: true,
         },
     });
 

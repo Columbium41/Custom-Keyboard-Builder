@@ -16,13 +16,14 @@ export default async function BuildsPage({ params }: { params: { build_id: strin
     }
 
     const currentUser = (build.user.username === session.user.name);
+    const likedBuild = (build.likes.filter((like) => like.userId === Number(session.user.id)).length > 0);
 
     return (
         <div className="pb-8">
             { /* Build Header */}
             <div className="relative bg-neutral-600">
                 {/* Actions */}
-                { currentUser && <BuildPageActionButtons buildId={build.build_id} /> }
+                <BuildPageActionButtons buildId={build.build_id} currentUser={currentUser} likedBuild={likedBuild} />
                 <div className="text-white text-center py-4 flex flex-col gap-1.5">
                     <h2 className="text-xl text-neutral-100">Build</h2>
                     <h1 className="text-2xl font-semibold">{build.title}</h1>

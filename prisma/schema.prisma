@@ -27,6 +27,7 @@ model User {
 
   avatar Photo?
   builds Build[]
+  likes  Like[]
 }
 
 model Build {
@@ -46,6 +47,7 @@ model Build {
   userId Int
   user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   photos Photo[]
+  likes  Like[]
 }
 
 model Photo {
@@ -61,4 +63,13 @@ model Photo {
   user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   buildId String?
   build   Build?  @relation(fields: [buildId], references: [build_id], onDelete: Cascade)
+}
+
+model Like {
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  buildId String
+  build   Build  @relation(fields: [buildId], references: [build_id], onDelete: Cascade)
+
+  @@unique([userId, buildId])
 }

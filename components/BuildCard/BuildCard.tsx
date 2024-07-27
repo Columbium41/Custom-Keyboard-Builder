@@ -6,6 +6,8 @@ import {BuildIF} from "@/lib/build";
 import Link from "next/link";
 import {Avatar, useColorMode} from "@chakra-ui/react";
 import {useRouter} from "next/navigation";
+import {Icon} from "@chakra-ui/icons";
+import {IoHeart} from "react-icons/io5";
 
 export function BuildCard({ build }: { build : BuildIF }) {
     const { colorMode } = useColorMode();
@@ -38,15 +40,25 @@ export function BuildCard({ build }: { build : BuildIF }) {
 
             {/* Build Metadata */}
             <div className={"rounded-b-inherit px-2 py-2 text-start " + (colorMode === 'light' ? 'bg-neutral-100 text-black' : 'bg-neutral-700 text-white')}>
-                <div className="flex flex-row items-center gap-2 px-1">
-                    { build.user.avatar === null ?
-                        <Avatar size="sm" /> :
-                        <Avatar src={build.user.avatar.fileURL} size="sm" />
-                    }
-                    <Link
-                        href={`/users/${encodeURIComponent(build.user.username)}`}
-                        className="!text-blue-400 hover:!underline"
-                    >{ build.user.username }</Link>
+                <div className="flex flex-row justify-between px-1">
+                    <div className="flex flex-row items-center gap-1.5">
+                        { build.user.avatar === null ?
+                            <Avatar size="sm" /> :
+                            <Avatar src={build.user.avatar.fileURL} size="sm" />
+                        }
+                        <Link
+                            href={`/users/${encodeURIComponent(build.user.username)}`}
+                            className="!text-blue-400 hover:!underline"
+                        >{ build.user.username }</Link>
+                    </div>
+                    <div className="flex flex-row items-center gap-1.5">
+                        <Icon
+                            as={IoHeart}
+                            color="inherit"
+                            boxSize={"1.5em"}
+                        />
+                        <p>{ build.likes.length }</p>
+                    </div>
                 </div>
                 <p className="mt-2 font-semibold text-lg">{ build.title }</p>
 
