@@ -1,8 +1,35 @@
 import {NextRequest} from "next/server";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/api/auth/[...nextauth]/_authOptions";
-import {isValidYouTubeVideo} from "@/app/api/builds/new/route";
 import {prisma} from "@/lib/prisma";
+import axios from "axios";
+
+const isValidYouTubeVideo = async (url: string) => {
+    const apiKey = process.env.YOUTUBE_API_KEY;
+    const videoId = extractVideoId(url);
+    if (!videoId) {
+        return "";
+    }
+
+    const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=id`;
+
+    try {
+        const response = await axios.get(apiUrl);
+        if (response.data.items.length > 0) {
+            return videoId;
+        }
+    } catch (error) {
+        console.error('Error validating YouTube video:', error);
+        return "";
+    }
+};
+
+const extractVideoId = (url: string) => {
+    const match = url.match(
+        /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    );
+    return match ? match[1] : null;
+};
 
 export async function PATCH(req: NextRequest) {
     const { title, caseValue, pcb, plate, switches, keycaps, mods, stabs, youtube_link, build_id } = await req.json();

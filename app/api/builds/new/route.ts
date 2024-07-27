@@ -4,7 +4,7 @@ import {authOptions} from "@/app/api/auth/[...nextauth]/_authOptions";
 import {prisma} from "@/lib/prisma";
 import axios from "axios";
 
-export const isValidYouTubeVideo = async (url: string) => {
+const isValidYouTubeVideo = async (url: string) => {
     const apiKey = process.env.YOUTUBE_API_KEY;
     const videoId = extractVideoId(url);
     if (!videoId) {
