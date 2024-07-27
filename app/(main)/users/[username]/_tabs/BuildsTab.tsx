@@ -25,6 +25,7 @@ export default function BuildsTab({
                         sm: "repeat(2, 1fr)",
                         lg: "repeat(3, 1fr)",
                         xl: "repeat(4, 1fr)",
+                        '2xl': "repeat(5, 1fr)",
                     }}
                     gap={3}
                 >

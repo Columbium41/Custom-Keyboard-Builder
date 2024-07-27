@@ -28,7 +28,11 @@ export function BuildCard({ build }: { build : BuildIF }) {
                     alt={"Build Thumbnail"}
                     fill
                     className="object-cover !rounded-t-inherit"
-                    sizes="(max-width: 480px) 100vw, (max-width: 992px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                    sizes="(max-width: 480px) 100vw,
+                    (max-width: 992px) 50vw,
+                    (max-width: 1280px) 33vw,
+                    (max-width: 1536px) 25vw,
+                    20vw"
                 />
             </div>
 

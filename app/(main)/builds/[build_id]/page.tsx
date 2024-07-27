@@ -96,7 +96,16 @@ export default async function BuildsPage({ params }: { params: { build_id: strin
                     <div>
                         <h2 className="font-bold text-lg">Details:</h2>
                         <Divider orientation="horizontal" mb={1}/>
-                        <p><span className="font-semibold">Date Published:</span> { build.createdAt.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) }</p>
+                        <p>
+                            <span className="font-semibold">Date Published: </span>
+                            { build.createdAt.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) }
+                        </p>
+                        { (build.createdAt.getTime() !== build.updatedAt.getTime()) && (
+                            <p>
+                                <span className="font-semibold">Last Updated: </span>
+                                { build.updatedAt.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) }
+                            </p>
+                        ) }
                     </div>
                 </div>
 
@@ -110,7 +119,7 @@ export default async function BuildsPage({ params }: { params: { build_id: strin
                 </div>
             </Grid>
 
-            {/* TODO: implement comments */}
+            {/* TODO: implement comments & upvotes */}
         </div>
     )
 }

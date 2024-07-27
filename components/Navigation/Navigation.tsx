@@ -27,13 +27,13 @@ export default function Navigation() {
             </div>
 
             {/* Search */}
-            <div className="w-1/2 flex justify-end transition-colors duration-150">
-                <NavigationSearch />
-                { /* TODO: implement backend for search feature */}
-                <div className="w-12 h-3/4 my-auto">
-                    <LazySVG name="search" className="w-full h-full stroke-current hover:text-orange-300 cursor-pointer"/>
-                </div>
-            </div>
+            {/*<div className="w-1/2 flex justify-end transition-colors duration-150">*/}
+            {/*    <NavigationSearch />*/}
+            {/*    { /* TODO: implement backend for search feature *!/*/}
+            {/*    <div className="w-12 h-3/4 my-auto">*/}
+            {/*        <LazySVG name="search" className="w-full h-full stroke-current hover:text-orange-300 cursor-pointer"/>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
         </nav>
     )
 }
