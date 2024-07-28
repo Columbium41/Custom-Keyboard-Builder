@@ -6,8 +6,10 @@ import {UserIF} from "@/lib/user";
 import {useEffect, useState} from "react";
 import BuildsTab from "@/app/(main)/users/[username]/_tabs/BuildsTab";
 import {useSearchParams} from "next/navigation";
+import LikedBuildsTab from "@/app/(main)/users/[username]/_tabs/LikedBuildsTab";
+import {BuildIF} from "@/lib/build";
 
-export function UserTabs({ user, currentUser }: { user: UserIF, currentUser: boolean }) {
+export function UserTabs({ user, currentUser, likedBuilds }: { user: UserIF, currentUser: boolean, likedBuilds: BuildIF[] }) {
     const [tabIndex, setTabIndex] = useState(0);
     const searchParams = useSearchParams();
     const tab = searchParams.get("tab");
@@ -50,6 +52,7 @@ export function UserTabs({ user, currentUser }: { user: UserIF, currentUser: boo
             <TabList>
                 <Tab>Profile</Tab>
                 <Tab>Builds</Tab>
+                { currentUser && (<Tab>Liked Builds</Tab>) }
             </TabList>
 
             <TabPanels>
@@ -59,6 +62,13 @@ export function UserTabs({ user, currentUser }: { user: UserIF, currentUser: boo
                 <TabPanel>
                     <BuildsTab user={user} sessionLikes={sessionLikes} />
                 </TabPanel>
+                { currentUser &&
+                    (
+                        <TabPanel>
+                            <LikedBuildsTab user={user} likedBuilds={likedBuilds} />
+                        </TabPanel>
+                    )
+                }
             </TabPanels>
         </Tabs>
     )
