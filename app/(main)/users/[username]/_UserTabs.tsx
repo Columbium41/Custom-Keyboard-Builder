@@ -12,6 +12,29 @@ export function UserTabs({ user, currentUser }: { user: UserIF, currentUser: boo
     const searchParams = useSearchParams();
     const tab = searchParams.get("tab");
 
+    const [sessionLikes, setSessionLikes] = useState<{
+        userId: number,
+        buildId: string
+    }[]>([]);
+
+    useEffect(() => {
+        const fetchSessionLikes = async () => {
+            const res = await fetch('/api/likes/get_user_likes', {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                setSessionLikes(data.likes);
+            }
+        };
+
+        fetchSessionLikes();
+    }, []);
+
     useEffect(() => {
         setTabIndex(tab ? parseInt(tab) : 0);
     }, [tab]);
@@ -34,7 +57,7 @@ export function UserTabs({ user, currentUser }: { user: UserIF, currentUser: boo
                     <ProfileTab user={user} currentUser={currentUser} setTabIndex={setTabIndex} />
                 </TabPanel>
                 <TabPanel>
-                    <BuildsTab user={user} />
+                    <BuildsTab user={user} sessionLikes={sessionLikes} />
                 </TabPanel>
             </TabPanels>
         </Tabs>

@@ -5,9 +5,11 @@ import {UserIF} from "@/lib/user";
 import {BuildCard} from "@/components/BuildCard/BuildCard";
 
 export default function BuildsTab({
-    user
+    user,
+    sessionLikes,
 }: {
-    user: UserIF
+    user: UserIF,
+    sessionLikes: { userId: number, buildId: string }[]
 }) {
     if (!user.builds || user.builds.length === 0) {
         return (
@@ -34,7 +36,7 @@ export default function BuildsTab({
                         <BuildCard
                             build={build}
                             key={index}
-                            liked={user.likes.filter((like) => like.buildId === build.build_id).length > 0}
+                            liked={sessionLikes.filter((like) => like.buildId === build.build_id).length > 0}
                         />
                     )) }
                 </Grid>
