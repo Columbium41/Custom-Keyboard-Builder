@@ -4,8 +4,9 @@ import {UserIF} from "@/lib/user";
 import {Box, Grid} from "@chakra-ui/react";
 import {BuildCard} from "@/components/BuildCard/BuildCard";
 import {BuildIF} from "@/lib/build";
+import {LikedBuildsIF} from "@/lib/like";
 
-export default function LikedBuildsTab({ user, likedBuilds }: { user: UserIF, likedBuilds: BuildIF[] }) {
+export default function LikedBuildsTab({ user, likedBuilds }: { user: UserIF, likedBuilds: LikedBuildsIF[] }) {
 
     if (!user.likes || user.likes.length === 0) {
         return (
@@ -27,10 +28,10 @@ export default function LikedBuildsTab({ user, likedBuilds }: { user: UserIF, li
                     }}
                     gap={3}
                 >
-                    { likedBuilds.map((build, index) => (
+                    { likedBuilds.map((likedBuild, index) => (
                         // @ts-ignore
                         <BuildCard
-                            build={build}
+                            build={likedBuild.build}
                             key={index}
                             liked={true}
                         />

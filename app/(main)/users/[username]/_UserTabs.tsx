@@ -7,9 +7,9 @@ import {useEffect, useState} from "react";
 import BuildsTab from "@/app/(main)/users/[username]/_tabs/BuildsTab";
 import {useSearchParams} from "next/navigation";
 import LikedBuildsTab from "@/app/(main)/users/[username]/_tabs/LikedBuildsTab";
-import {BuildIF} from "@/lib/build";
+import {LikedBuildsIF} from "@/lib/like";
 
-export function UserTabs({ user, currentUser, likedBuilds }: { user: UserIF, currentUser: boolean, likedBuilds: BuildIF[] }) {
+export function UserTabs({ user, currentUser, likedBuilds }: { user: UserIF, currentUser: boolean, likedBuilds: LikedBuildsIF[] }) {
     const [tabIndex, setTabIndex] = useState(0);
     const searchParams = useSearchParams();
     const tab = searchParams.get("tab");

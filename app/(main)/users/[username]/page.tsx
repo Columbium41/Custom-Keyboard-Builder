@@ -4,7 +4,7 @@ import { Avatar } from '@chakra-ui/react'
 import {getUserData} from "@/lib/user";
 import {notFound} from "next/navigation";
 import {UserTabs} from "@/app/(main)/users/[username]/_UserTabs";
-import {BuildIF, getBuildData} from "@/lib/build";
+import {getUserLikedBuilds, LikedBuildsIF} from "@/lib/like";
 
 export default async function UsersPage({ params }: { params: { username: string } }) {
     const session = await getServerSession(authOptions);
@@ -15,13 +15,10 @@ export default async function UsersPage({ params }: { params: { username: string
     }
 
     const currentUser = (user.username === session.user.name);
-    let likedBuilds: BuildIF[] = [];
+    let likedBuilds: LikedBuildsIF[] = [];
 
-    for (const like of user.likes) {
-        const buildData = await getBuildData(like.buildId);
-        if (buildData) {
-            likedBuilds.push(buildData);
-        }
+    if (currentUser) {
+        likedBuilds = await getUserLikedBuilds(Number(session.user.id));
     }
 
     return (
