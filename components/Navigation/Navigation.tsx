@@ -1,11 +1,10 @@
 import Link from "next/link";
 import LazySVG from "@/components/LazySVG/LazySVG";
-import NavigationSearch from "@/components/NavigationSearch/NavigationSearch";
 import "@/components/Header/Header.css";
 
 export const navigationLinks = [
-    { name: "Build", to: "/builds/new" },
-    { name: "User Builds", to: "/builds" }
+    { name: "Create Build", to: "/builds/new" },
+    { name: "Completed Builds", to: "/builds" }
 ];
 
 export default function Navigation() {

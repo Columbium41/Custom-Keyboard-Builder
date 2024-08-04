@@ -17,7 +17,7 @@ export default function LikedBuildsTab({ user, likedBuilds }: { user: UserIF, li
     } else {
         return (
             <Box>
-                <h1 className="text-center text-xl font-semibold mb-4">User Builds</h1>
+                <h1 className="text-center text-xl font-semibold mb-4">Liked Builds</h1>
                 <Grid
                     templateColumns={{
                         base: "repeat(1, 1fr)",

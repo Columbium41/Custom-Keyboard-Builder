@@ -20,6 +20,7 @@ export function BuildCard({ build, liked }: { build : BuildIF, liked?: boolean }
     return (
         <div
             className="w-full rounded-t-lg rounded-b-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out cursor-pointer"
+            style={{ maxWidth: "400px" }}
             onClick={handleClick}
         >
             {/* Build thumbnail */}

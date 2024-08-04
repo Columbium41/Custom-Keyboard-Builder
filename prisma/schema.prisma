@@ -25,9 +25,10 @@ model User {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  avatar Photo?
-  builds Build[]
-  likes  Like[]
+  avatar   Photo?
+  builds   Build[]
+  likes    Like[]
+  comments Comment[]
 }
 
 model Build {
@@ -44,10 +45,11 @@ model Build {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  userId Int
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  photos Photo[]
-  likes  Like[]
+  userId   Int
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photos   Photo[]
+  likes    Like[]
+  comments Comment[]
 }
 
 model Photo {
@@ -70,6 +72,16 @@ model Like {
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   buildId String
   build   Build  @relation(fields: [buildId], references: [build_id], onDelete: Cascade)
+
+  @@unique([userId, buildId])
+}
+
+model Comment {
+  userId   Int
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  buildId  String
+  build    Build  @relation(fields: [buildId], references: [build_id], onDelete: Cascade)
+  contents String @default("") @db.VarChar(1000)
 
   @@unique([userId, buildId])
 }
