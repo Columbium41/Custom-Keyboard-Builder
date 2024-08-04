@@ -5,7 +5,7 @@ import { getToken } from "next-auth/jwt";
 
 const rateLimit = new Ratelimit({
     redis: kv,
-    limiter: Ratelimit.slidingWindow(5, '10 s'),
+    limiter: Ratelimit.slidingWindow(8, '10 s'),
 });
 
 export const config = {
