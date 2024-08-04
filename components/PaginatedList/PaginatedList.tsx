@@ -33,7 +33,7 @@ export function PaginatedList({
                 setTotalPages(cachedData.totalPages);
             } else {
                 // fetch items through API and cache results
-                const response = await fetch(`${url}?page=${page}&limit=${itemsPerPage}`, {
+                const response = await fetch(`${url}&page=${page}&limit=${itemsPerPage}`, {
                     method: "GET",
                 });
                 const data = await response.json();
@@ -75,7 +75,7 @@ export function PaginatedList({
     }, []);
 
     useEffect(() => {
-        fetchData(currentPage)
+        fetchData(currentPage);
     }, [currentPage]);
 
     const handlePageChange = (newPage: number) => {

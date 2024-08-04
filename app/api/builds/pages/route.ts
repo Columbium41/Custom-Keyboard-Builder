@@ -3,16 +3,56 @@ import {prisma} from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
     const { searchParams } = req.nextUrl;
-    const { page = "1", limit = "10" } = Object.fromEntries(searchParams.entries());
+    const { page = "1", limit = "10", sort = "newest", timeframe = "all_time" } = Object.fromEntries(searchParams.entries());
     const pageNumber = parseInt(page);
     const itemsPerPage = parseInt(limit);
+    let date = new Date();
+    let orderByObj = {};
+
+    switch (timeframe) {
+        case "past_year":
+            date = new Date(date.getDate() - 365);
+            break;
+        case "past_month":
+            date = new Date(date.getDate() - 30);
+            break;
+        case "past_week":
+            date = new Date(date.getDate() - 7);
+            break;
+        default:
+            date = new Date(2023, 1, 1);
+            break;
+    }
+
+    switch (sort) {
+        case "oldest":
+            orderByObj = { createdAt: 'asc' }
+            break;
+        case "most_likes":
+            orderByObj = { likes: { _count: 'desc' } }
+            break;
+        default:
+            orderByObj = { createdAt: 'desc' }
+            break;
+    }
 
     try {
         // Fetch total count of items
-        const totalItems = await prisma.build.count();
+        const totalItems = await prisma.build.count({
+            where: {
+                createdAt: {
+                    gte: date,
+                },
+            },
+        });
 
         // Fetch paginated items
         const items = await prisma.build.findMany({
+            where: {
+                createdAt: {
+                    gte: date,
+                },
+            },
             skip: (pageNumber - 1) * itemsPerPage,
             take: itemsPerPage,
             select: {
@@ -36,7 +76,11 @@ export async function GET(req: NextRequest) {
                     },
                 },
                 likes: true,
+                _count: {
+                    select: { likes: true },
+                },
             },
+            orderBy: orderByObj
         });
 
         return new Response(JSON.stringify({ total: totalItems, items }), { status: 200 });
