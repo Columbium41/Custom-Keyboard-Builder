@@ -1,12 +1,11 @@
-import {Ratelimit} from "@upstash/ratelimit";
-import { kv } from "@vercel/kv";
 import {NextRequest, NextResponse} from "next/server";
 import { getToken } from "next-auth/jwt";
+import rateLimitMiddleware from "@/lib/rateLimit";
 
-const rateLimit = new Ratelimit({
-    redis: kv,
-    limiter: Ratelimit.slidingWindow(8, '10 s'),
-});
+const rateLimiter = rateLimitMiddleware({
+    windowMs: 1000 * 10, // 10 seconds
+    max: 8,
+})
 
 export const config = {
     matcher: [
@@ -16,7 +15,6 @@ export const config = {
 }
 
 export default async function middleware(req: NextRequest) {
-    const ip = req.ip ?? '127.0.0.1';
     const pathname = req.nextUrl.pathname;
     const token = await getToken({ req });
     const isAuthenticated = !!token;
@@ -29,11 +27,7 @@ export default async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL('/signin', req.url));
     }
 
-    if (process.env.NODE_ENV === 'production') {
-        const { success, pending, limit, reset, remaining } = await rateLimit.limit(ip);
+    const { success } = rateLimiter(req);
 
-        return success ? NextResponse.next() : NextResponse.redirect(new URL('/blocked', req.url))
-    }
-
-    return NextResponse.next();
+    return success ? NextResponse.next() : NextResponse.redirect(new URL('/blocked', req.url))
 }

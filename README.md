@@ -21,7 +21,6 @@ build and configure their own custom keyboards and share them with other users.
 - [Nodemailer](https://www.nodemailer.com/) (Email Sending)
 - [Google ReCaptcha](https://www.google.com/recaptcha/about/) (Bot Prevention)
 - [Youtube Data API V3](https://developers.google.com/youtube/v3) (Youtube Link Validation)
-- [Vercel KV](https://vercel.com/docs/storage/vercel-kv) + [Upstash](https://upstash.com/) (Rate-Limiting)
 
 ### Deployment & Data Storage
 - [Vercel](https://vercel.com) (Deployment)
