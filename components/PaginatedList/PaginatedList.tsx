@@ -15,7 +15,7 @@ export function PaginatedList({
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [items, setItems] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [cache, setCache] = useState<{ [index: number]: any }>({});
 
     const [sessionLikes, setSessionLikes] = useState<{
@@ -25,6 +25,8 @@ export function PaginatedList({
 
     // fetch pages in pagination
     const fetchData = async (page: number) => {
+        setLoading(true);
+
         try {
             if (cache[page]) {
                 // set items to cached results
