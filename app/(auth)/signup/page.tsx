@@ -7,8 +7,6 @@ import {useCaptcha} from "@/components/providers/CaptchaProvider";
 import GoogleReCAPTCHA from "@/components/GoogleReCAPTCHA/GoogleReCAPTCHA";
 import {Button} from "@chakra-ui/react";
 
-const regex = /^[a-zA-Z0-9\s]+$/;
-
 export default function SignupPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -17,36 +15,7 @@ export default function SignupPage() {
     const router = useRouter();
     const { showToastPromise } = useToastContext();
     const { isCaptchaVerified } = useCaptcha();
-    const [usernameLength, setUsernameLength] = useState(false);
-    const [usernameSpecialChar, setUsernameSpecialChar] = useState(false);
-    const [passwordLength, setPasswordLength] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-
-    const handleUsernameChange = (value: string) => {
-        if (value.length < 6 || value.length > 30) {
-            setUsernameLength(true);
-        } else {
-            setUsernameLength(false)
-        }
-
-        if (!regex.test(value)) {
-            setUsernameSpecialChar(true);
-        } else {
-            setUsernameSpecialChar(false);
-        }
-
-        setUsername(value);
-    }
-
-    const handlePasswordChange = (value: string) => {
-        if (value.length < 8 || value.length > 40) {
-            setPasswordLength(true);
-        } else {
-            setPasswordLength(false);
-        }
-
-        setPassword(value);
-    }
 
     // submit form
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -100,12 +69,12 @@ export default function SignupPage() {
                             className="border border-neutral-500 bg-transparent px-4 py-2 rounded-xl block w-full"
                             value={username}
                             placeholder="John Doe"
-                            onChange={(e) => handleUsernameChange(e.target.value)}
+                            onChange={(e) => setUsername(e.target.value)}
                             required
                         />
-                        <ul>
-                            <li className={"text-red-500 " + (usernameLength ? "" : "hidden")}>Username must be between 6-30 characters</li>
-                            <li className={"text-red-500 " + (usernameSpecialChar ? "" : "hidden")}>Only alphanumerical characters and spaces</li>
+                        <ul className="text-sm mt-1 list-disc list-inside space-y-1">
+                            <li>Username must be between 6-30 characters</li>
+                            <li>Only alphanumerical characters and spaces</li>
                         </ul>
                     </div>
                     <div className="mb-3">
@@ -127,11 +96,13 @@ export default function SignupPage() {
                             type="password"
                             className="border border-neutral-500 bg-transparent px-4 py-2 rounded-xl block w-full"
                             value={password}
-                            onChange={(e) => handlePasswordChange(e.target.value)}
+                            onChange={(e) => setPassword(e.target.value)}
                             required
                         />
-                        <ul>
-                            <li className={"text-red-500 " + (passwordLength ? "" : "hidden")}>Password must be between 8-40 characters</li>
+                        <ul className="text-sm mt-1 list-disc list-inside space-y-1">
+                            <li>Password must be between 8-40 characters</li>
+                            <li>Use a combination of random letters & numbers</li>
+                            <li>Make sure your password is unrelated to your personal information</li>
                         </ul>
                     </div>
                     <div className="mb-3">
