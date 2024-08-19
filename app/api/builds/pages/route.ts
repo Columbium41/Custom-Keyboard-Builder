@@ -11,13 +11,13 @@ export async function GET(req: NextRequest) {
 
     switch (timeframe) {
         case "past_year":
-            date = new Date(date.getDate() - 365);
+            date.setFullYear(date.getFullYear() - 1);
             break;
         case "past_month":
-            date = new Date(date.getDate() - 30);
+            date.setDate(date.getDate() - 30);
             break;
         case "past_week":
-            date = new Date(date.getDate() - 7);
+            date.setDate(date.getDate() - 7);
             break;
         default:
             date = new Date(2023, 1, 1);
