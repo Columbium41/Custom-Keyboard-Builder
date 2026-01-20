@@ -52,7 +52,7 @@ export default function VerifyEmailPage() {
         }
 
         setIsLoading(true);
-        const loadingToast = toast.loading('Sending password reset email...');
+        const loadingToast = toast.loading('Sending account verfication email...');
 
         const res = await fetch(`/api/auth/send_email_verification`, {
             method: 'POST',
