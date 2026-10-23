@@ -77,11 +77,14 @@ model Like {
 }
 
 model Comment {
-  userId   Int
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  buildId  String
-  build    Build  @relation(fields: [buildId], references: [build_id], onDelete: Cascade)
-  contents String @default("") @db.VarChar(1000)
+  comment_id Int      @id @default(autoincrement())
+  contents   String   @default("") @db.VarChar(1000)
+  createdAt  DateTime @default(now())
 
-  @@unique([userId, buildId])
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  buildId String
+  build   Build  @relation(fields: [buildId], references: [build_id], onDelete: Cascade)
+
+  @@index([buildId])
 }

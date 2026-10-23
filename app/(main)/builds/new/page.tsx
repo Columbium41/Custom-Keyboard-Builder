@@ -14,7 +14,7 @@ import {
 import {useState} from "react";
 import {useToastContext} from "@/components/providers/ToastProvider";
 import {SmallCloseIcon} from "@chakra-ui/icons";
-import {getSignedBuildPhotoURL} from "@/actions/getSignedURLs";
+import {confirmBuildPhotoUpload, getSignedBuildPhotoURL} from "@/actions/getSignedURLs";
 import {computeSHA256} from "@/components/UploadSinglePhoto/UploadSinglePhoto";
 import {useRouter} from "next/navigation";
 
@@ -39,14 +39,23 @@ async function createPhoto(photo: File, isThumbnail: boolean, buildId: string) {
         throw new Error('Error when creating photos, please try again later');
     }
 
-    const thumbnailURL = signedURLResult.success.url;
-    await fetch(thumbnailURL, {
+    const { url, key } = signedURLResult.success;
+    const uploadRes = await fetch(url, {
         method: "PUT",
         body: photo,
         headers: {
             "Content-Type": photo.type,
         },
     });
+    if (!uploadRes.ok) {
+        throw new Error('Error when uploading photos, please try again later');
+    }
+
+    // save photo to database once upload succeeds
+    const confirmResult = await confirmBuildPhotoUpload(key);
+    if (confirmResult.failure !== undefined) {
+        throw new Error('Error when creating photos, please try again later');
+    }
 }
 
 export default function BuildPage() {
@@ -107,8 +116,6 @@ export default function BuildPage() {
     const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        setIsButtonLoading(true);
-
         if (!thumbnail) {
             showToast('Thumbnail not present', {}, 'error');
             return;
@@ -118,35 +125,56 @@ export default function BuildPage() {
             return;
         }
 
-        // create build
-        const res = await fetch('/api/builds/new', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
-        });
+        setIsButtonLoading(true);
 
-        const data = await res.json();
-        if (res.ok) {
+        try {
+            // create build
+            const res = await fetch('/api/builds/new', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                showToast(data.error, {}, 'error');
+                return;
+            }
+
             const buildId = data.buildId;
 
-            // create thumbnail
-            await createPhoto(thumbnail, true, buildId);
+            try {
+                // create thumbnail
+                await createPhoto(thumbnail, true, buildId);
 
-            // create photos
-            for (let i = 0; i < photos.length; i++) {
-                const photo = photos[i];
-                await createPhoto(photo, false, buildId);
+                // create photos
+                for (let i = 0; i < photos.length; i++) {
+                    const photo = photos[i];
+                    await createPhoto(photo, false, buildId);
+                }
+            } catch (err) {
+                // remove the partially created build so the user can retry without duplicates
+                await fetch('/api/builds/delete', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ buildId: buildId })
+                });
+
+                throw err;
             }
 
             showToast('Successfully created build', {}, 'success');
             router.push(`/builds/${buildId}`);
-        } else {
-            showToast(data.error, {}, 'error');
+        } catch (err) {
+            console.error(err);
+            showToast(err instanceof Error ? err.message : 'Unknown error, please try again later', {}, 'error');
+        } finally {
+            setIsButtonLoading(false);
         }
-
-        setIsButtonLoading(false);
     }
 
     return (

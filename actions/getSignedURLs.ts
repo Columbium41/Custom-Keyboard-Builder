@@ -2,13 +2,36 @@
 
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/api/auth/[...nextauth]/_authOptions";
-import {PutObjectCommand, DeleteObjectCommand} from "@aws-sdk/client-s3";
+import {PutObjectCommand, DeleteObjectCommand, HeadObjectCommand, GetObjectCommand} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import crypto from "crypto";
 import {prisma} from "@/lib/prisma";
 import s3 from "@/lib/s3client";
 
 const generateFileName = (bytes = 32) => crypto.randomBytes(bytes).toString("hex");
+
+// public object url (a signed url without its query string), matches the format stored in Photo.fileURL
+const getObjectURL = async (key: string) => {
+    const getObjectCommand = new GetObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME!,
+        Key: key,
+    });
+    const signedURL = await getSignedUrl(s3, getObjectCommand, { expiresIn: 60 });
+
+    return signedURL.split("?")[0];
+}
+
+// fetch uploaded object metadata, returns null if the object was never uploaded
+const getUploadedObject = async (key: string) => {
+    try {
+        return await s3.send(new HeadObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME!,
+            Key: key,
+        }));
+    } catch (e) {
+        return null;
+    }
+}
 
 const acceptedTypes = [
     "image/jpeg",
@@ -17,6 +40,7 @@ const acceptedTypes = [
     "image/gif",
 ];
 
+// step 1 of avatar upload: returns a signed url to PUT the file to, call confirmAvatarUpload after uploading
 export async function getSignedAvatarURL(type: string, size: number, checksum: string) {
     const maxFileSize = 1024 * 1024 * 2; // 2MB
 
@@ -35,7 +59,7 @@ export async function getSignedAvatarURL(type: string, size: number, checksum: s
             return {failure: "User is not authenticated"}
         }
 
-        // put object in s3 bucket
+        // sign put request for s3 bucket
         const filename = generateFileName();
         const putObjectCommand = new PutObjectCommand({
             Bucket: process.env.AWS_BUCKET_NAME!,
@@ -44,7 +68,6 @@ export async function getSignedAvatarURL(type: string, size: number, checksum: s
             ContentLength: size,
             ChecksumSHA256: checksum,
             Metadata: {
-                // @ts-ignore
                 userId: session.user.id,
             }
         });
@@ -52,15 +75,40 @@ export async function getSignedAvatarURL(type: string, size: number, checksum: s
             expiresIn: 60,
         });
 
-        // check if current photo exists in the database
+        return {success: {url: signedURL, key: filename}}
+    } catch (e) {
+        console.error(e)
+        return { failure: "Unknown error, please try again later" }
+    }
+}
+
+// step 2 of avatar upload: verifies the object exists in s3, then replaces the user's avatar in the database
+export async function confirmAvatarUpload(key: string) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return {failure: "User is not authenticated"}
+        }
+
+        // s3 lowercases metadata keys
+        const object = await getUploadedObject(key);
+        if (!object || object.Metadata?.userid !== session.user.id) {
+            return {failure: "Upload not found"}
+        }
+
+        const userId = Number(session.user.id);
         const photo = await prisma.photo.findUnique({
             where: {
-                // @ts-ignore
-                userId: Number(session.user.id),
+                userId: userId,
             }
         });
 
-        // delete photo from s3 and database if present
+        // already confirmed
+        if (photo && photo.filename === key) {
+            return {success: {}}
+        }
+
+        // delete old photo from s3 and database if present
         if (photo) {
             const deleteObjectCommand = new DeleteObjectCommand({
                 Bucket: process.env.AWS_BUCKET_NAME!,
@@ -70,31 +118,30 @@ export async function getSignedAvatarURL(type: string, size: number, checksum: s
 
             await prisma.photo.delete({
                 where: {
-                    // @ts-ignore
-                    userId: Number(session.user.id),
+                    userId: userId,
                 }
             });
         }
 
         // create metadata in database
         await prisma.photo.create({
-           data: {
-               // @ts-ignore
-               userId: Number(session.user.id),
-               filename: filename,
-               fileURL: signedURL.split("?")[0],
-               mimetype: type,
-               size: size,
-           }
+            data: {
+                userId: userId,
+                filename: key,
+                fileURL: await getObjectURL(key),
+                mimetype: object.ContentType!,
+                size: object.ContentLength!,
+            }
         });
 
-        return {success: {url: signedURL}}
+        return {success: {}}
     } catch (e) {
         console.error(e)
         return { failure: "Unknown error, please try again later" }
     }
 }
 
+// step 1 of build photo upload: returns a signed url to PUT the file to, call confirmBuildPhotoUpload after uploading
 export async function getSignedBuildPhotoURL(buildId: string, isThumbnail: boolean, type: string, size: number, checksum: string) {
     const maxFileSize = 1024 * 1024 * 5; // 5MB
 
@@ -104,7 +151,7 @@ export async function getSignedBuildPhotoURL(buildId: string, isThumbnail: boole
             return {failure: "Invalid file type"}
         }
         if (size > maxFileSize) {
-            return {failure: "Avatar must be under 5MB"}
+            return {failure: "Photo must be under 5MB"}
         }
 
         // check if user is authenticated before giving access
@@ -119,7 +166,7 @@ export async function getSignedBuildPhotoURL(buildId: string, isThumbnail: boole
             return {failure: "User is not authenticated or does not have the correct permissions"}
         }
 
-        // put object in s3 bucket
+        // sign put request for s3 bucket
         const filename = generateFileName();
         const putObjectCommand = new PutObjectCommand({
             Bucket: process.env.AWS_BUCKET_NAME!,
@@ -128,27 +175,69 @@ export async function getSignedBuildPhotoURL(buildId: string, isThumbnail: boole
             ContentLength: size,
             ChecksumSHA256: checksum,
             Metadata: {
-                // @ts-ignore
                 userId: session.user.id,
+                buildId: buildId,
+                isThumbnail: String(isThumbnail),
             }
         });
         const signedURL = await getSignedUrl(s3, putObjectCommand, {
             expiresIn: 60,
         });
 
+        return {success: {url: signedURL, key: filename}}
+    } catch (e) {
+        console.error(e)
+        return { failure: "Unknown error, please try again later" }
+    }
+}
+
+// step 2 of build photo upload: verifies the object exists in s3, then creates the photo in the database
+export async function confirmBuildPhotoUpload(key: string) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return {failure: "User is not authenticated"}
+        }
+
+        // s3 lowercases metadata keys
+        const object = await getUploadedObject(key);
+        const buildId = object?.Metadata?.buildid;
+        if (!object || !buildId || object.Metadata?.userid !== session.user.id) {
+            return {failure: "Upload not found"}
+        }
+
+        const build = await prisma.build.findUnique({
+            where: {
+                build_id: buildId
+            }
+        });
+        if (!build || build.userId !== Number(session.user.id)) {
+            return {failure: "User does not have the correct permissions"}
+        }
+
+        // already confirmed
+        const existingPhoto = await prisma.photo.findFirst({
+            where: {
+                filename: key,
+            }
+        });
+        if (existingPhoto) {
+            return {success: {}}
+        }
+
         // create metadata in database
         await prisma.photo.create({
             data: {
                 buildId: buildId,
-                filename: filename,
-                fileURL: signedURL.split("?")[0],
-                mimetype: type,
-                size: size,
-                isThumbnail: isThumbnail,
+                filename: key,
+                fileURL: await getObjectURL(key),
+                mimetype: object.ContentType!,
+                size: object.ContentLength!,
+                isThumbnail: object.Metadata?.isthumbnail === "true",
             }
         });
 
-        return {success: {url: signedURL}}
+        return {success: {}}
     } catch (e) {
         console.error(e)
         return { failure: "Unknown error, please try again later" }

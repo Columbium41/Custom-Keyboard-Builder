@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Box, Button, Input, FormControl, Image } from '@chakra-ui/react';
-import {getSignedAvatarURL} from "@/actions/getSignedURLs";
+import {confirmAvatarUpload, getSignedAvatarURL} from "@/actions/getSignedURLs";
 import {useToastContext} from "@/components/providers/ToastProvider";
 
 export const computeSHA256  = async (file: File) => {
@@ -47,15 +47,26 @@ export default function UploadSinglePhoto() {
                 return;
             }
 
-            const url = signedURLResult.success.url;
+            const { url, key } = signedURLResult.success;
 
-            await fetch(url, {
+            const uploadRes = await fetch(url, {
                 method: "PUT",
                 body: selectedFile,
                 headers: {
                     "Content-Type": selectedFile.type,
                 },
             });
+            if (!uploadRes.ok) {
+                throw new Error(`S3 upload failed with status ${uploadRes.status}`);
+            }
+
+            // save photo to database once upload succeeds
+            const confirmResult = await confirmAvatarUpload(key);
+            if (confirmResult.failure !== undefined) {
+                showToast(confirmResult.failure, {}, 'error')
+                setIsLoading(false);
+                return;
+            }
 
             setIsLoading(false);
             showToast('Successfully uploaded image', {}, 'success');

@@ -51,12 +51,12 @@ const components = {
     },
 };
 
-const themeConfig: ThemeConfig = {
+const config: ThemeConfig = {
     initialColorMode: 'dark',
     useSystemColorMode: true,
 };
 
-export const theme = extendTheme({ styles, components, themeConfig });
+export const theme = extendTheme({ styles, components, config });
 
 export function ChakraProviders({ children }: { children: React.ReactNode }) {
     return (
