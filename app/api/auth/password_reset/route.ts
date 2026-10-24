@@ -3,12 +3,17 @@ import jwt from "jsonwebtoken";
 import {NextRequest} from "next/server";
 import {hash} from "bcrypt";
 import {sendPasswordResetConfirmation} from "@/mailer/passwordReset";
+import {invalidBodyResponse, readJSON} from "@/lib/request";
 
 const PASSWORD_RESET_SECRET = process.env.PASSWORD_RESET_SECRET as string;
 
 // Verify Token
 export async function POST(req: NextRequest) {
-    const { token } = await req.json();
+    const body = await readJSON(req);
+    if (!body) {
+        return invalidBodyResponse();
+    }
+    const { token } = body;
 
     if (!token || Array.isArray(token)) {
         return new Response(JSON.stringify({ error: 'Invalid or expired token' }), {
@@ -50,7 +55,11 @@ export async function POST(req: NextRequest) {
 
 // change password
 export async function PATCH(req: NextRequest) {
-    const { token, newPassword, passwordConfirmation } = await req.json();
+    const body = await readJSON(req);
+    if (!body) {
+        return invalidBodyResponse();
+    }
+    const { token, newPassword, passwordConfirmation } = body;
 
     if (newPassword.length < 8 || newPassword.length > 40) {
         return new Response(JSON.stringify({ error: 'Passwords must be between 8 and 40 characters' }), {

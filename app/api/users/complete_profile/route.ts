@@ -4,10 +4,15 @@ import {authOptions} from "@/app/api/auth/[...nextauth]/_authOptions";
 import {prisma} from "@/lib/prisma";
 import {Prisma} from "@prisma/client";
 import {getUsernameErrors} from "@/lib/user";
+import {invalidBodyResponse, readJSON} from "@/lib/request";
 
 // set the username for an oauth account that hasn't completed onboarding
 export async function POST(req: NextRequest) {
-    const { username } = await req.json();
+    const body = await readJSON(req);
+    if (!body) {
+        return invalidBodyResponse();
+    }
+    const { username } = body;
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {

@@ -1,12 +1,17 @@
 import { prisma } from "@/lib/prisma";
 import jwt from "jsonwebtoken";
 import {NextRequest} from "next/server";
+import {invalidBodyResponse, readJSON} from "@/lib/request";
 
 const EMAIL_SECRET = process.env.EMAIL_SECRET as string;
 
 // Verify Email Token
 export async function POST(req: NextRequest) {
-    const { token } = await req.json();
+    const body = await readJSON(req);
+    if (!body) {
+        return invalidBodyResponse();
+    }
+    const { token } = body;
 
     if (!token || Array.isArray(token)) {
         return new Response(JSON.stringify({ error: 'Invalid or expired token' }), {

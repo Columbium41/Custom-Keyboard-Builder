@@ -2,9 +2,14 @@ import {NextRequest} from "next/server";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/api/auth/[...nextauth]/_authOptions";
 import {prisma} from "@/lib/prisma";
+import {invalidBodyResponse, readJSON} from "@/lib/request";
 
 export async function PATCH(req: NextRequest) {
-    const { username, description } = await req.json();
+    const body = await readJSON(req);
+    if (!body) {
+        return invalidBodyResponse();
+    }
+    const { username, description } = body;
     const session = await getServerSession(authOptions);
 
     if (!username || !description) {

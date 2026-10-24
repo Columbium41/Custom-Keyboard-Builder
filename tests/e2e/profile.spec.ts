@@ -10,8 +10,13 @@ test.describe("profile page", () => {
 
         await page.getByRole("button", { name: "Edit Description", exact: true }).click();
         await page.getByPlaceholder("enter a description").fill("Collector of tactile switches");
+        // wait for the save, otherwise the test can end and abort the request mid-flight
+        const response = page.waitForResponse("**/api/users/update_description");
         await page.getByRole("button", { name: "Save", exact: true }).click();
+        expect((await response).ok()).toBe(true);
 
+        // the page reloads after saving, so the textarea is gone and the saved text is shown
+        await expect(page.getByPlaceholder("enter a description")).toHaveCount(0);
         await expect(page.getByText("Collector of tactile switches")).toBeVisible();
     });
 

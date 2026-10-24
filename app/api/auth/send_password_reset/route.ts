@@ -3,12 +3,17 @@ import {NextRequest} from "next/server";
 import {prisma} from "@/lib/prisma";
 import jwt from "jsonwebtoken";
 import {captchaFailedResponse, verifyCaptcha} from "@/lib/recaptcha";
+import {invalidBodyResponse, readJSON} from "@/lib/request";
 
 const PASSWORD_RESET_SECRET = process.env.PASSWORD_RESET_SECRET as string;
 
 // Send forgot your password email
 export async function POST(req: NextRequest) {
-    const { email, captchaToken } = await req.json();
+    const body = await readJSON(req);
+    if (!body) {
+        return invalidBodyResponse();
+    }
+    const { email, captchaToken } = body;
 
     if (!(await verifyCaptcha(captchaToken))) {
         return captchaFailedResponse();

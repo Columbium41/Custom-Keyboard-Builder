@@ -15,9 +15,12 @@ test.describe("choosing a username", () => {
 
         await visit("/complete_profile");
         await page.getByLabel("Username:").fill("bad_name");
+        // wait for the api, the form's hint text also mentions alphanumerical characters
+        const response = page.waitForResponse("**/api/users/complete_profile");
         await page.getByRole("button", { name: "Continue", exact: true }).click();
+        expect((await response).status()).toBe(400);
 
-        await expect(page.getByText(/alphanumerical characters and spaces/)).toBeVisible();
+        await expect(page.getByText("Username can only contain alphanumerical characters and spaces")).toBeVisible();
         await expect(page).toHaveURL("/complete_profile");
     });
 

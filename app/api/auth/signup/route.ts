@@ -5,9 +5,14 @@ import jwt from "jsonwebtoken";
 import {sendEmailVerification} from "@/mailer/emailVerification";
 import {getUsernameErrors} from "@/lib/user";
 import {captchaFailedResponse, verifyCaptcha} from "@/lib/recaptcha";
+import {invalidBodyResponse, readJSON} from "@/lib/request";
 
 export async function POST(req: NextRequest) {
-    const { username, email, password, passwordConfirmation, captchaToken } = await req.json();
+    const body = await readJSON(req);
+    if (!body) {
+        return invalidBodyResponse();
+    }
+    const { username, email, password, passwordConfirmation, captchaToken } = body;
 
     // check the captcha before anything else
     if (!(await verifyCaptcha(captchaToken))) {

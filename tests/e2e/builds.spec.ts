@@ -61,9 +61,8 @@ test.describe("build page", () => {
         expect(await db.like.count()).toBe(0);
     });
 
-    // BUG: after saving, router.push() shows the build page from next's client router cache,
-    // so the old title is still displayed until a refresh. un-fixme once the edit form refreshes the router
-    test.fixme("lets the owner edit their build", async ({ page, visit, factories, loginAs }) => {
+    // catches the client router cache showing the old build page after saving
+    test("lets the owner edit their build", async ({ page, visit, factories, loginAs }) => {
         const owner = await factories.createUser();
         const build = await factories.createBuildWithThumbnail(owner.id, { title: "Before Edit" });
         await loginAs(owner);

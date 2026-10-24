@@ -3,12 +3,17 @@ import {NextRequest} from "next/server";
 import jwt from "jsonwebtoken";
 import {captchaFailedResponse, verifyCaptcha} from "@/lib/recaptcha";
 import {sendEmailVerification} from "@/mailer/emailVerification";
+import {invalidBodyResponse, readJSON} from "@/lib/request";
 
 const EMAIL_SECRET = process.env.EMAIL_SECRET as string;
 
 // Re-send email verification token
 export async function POST(req: NextRequest) {
-    const { email, captchaToken } = await req.json();
+    const body = await readJSON(req);
+    if (!body) {
+        return invalidBodyResponse();
+    }
+    const { email, captchaToken } = body;
 
     if (!(await verifyCaptcha(captchaToken))) {
         return captchaFailedResponse();

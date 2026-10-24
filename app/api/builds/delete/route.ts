@@ -4,9 +4,14 @@ import {authOptions} from "@/app/api/auth/[...nextauth]/_authOptions";
 import {prisma} from "@/lib/prisma";
 import {DeleteObjectCommand} from "@aws-sdk/client-s3";
 import s3 from "@/lib/s3client";
+import {invalidBodyResponse, readJSON} from "@/lib/request";
 
 export async function DELETE(req: NextRequest) {
-    const { buildId } = await req.json();
+    const body = await readJSON(req);
+    if (!body) {
+        return invalidBodyResponse();
+    }
+    const { buildId } = body;
     const session = await getServerSession(authOptions);
 
     if (!buildId) {

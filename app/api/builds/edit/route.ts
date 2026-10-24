@@ -3,6 +3,7 @@ import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/api/auth/[...nextauth]/_authOptions";
 import {prisma} from "@/lib/prisma";
 import axios from "axios";
+import {invalidBodyResponse, readJSON} from "@/lib/request";
 
 const isValidYouTubeVideo = async (url: string) => {
     const apiKey = process.env.YOUTUBE_API_KEY;
@@ -32,7 +33,11 @@ const extractVideoId = (url: string) => {
 };
 
 export async function PATCH(req: NextRequest) {
-    const { title, caseValue, pcb, plate, switches, keycaps, mods, stabs, youtube_link, build_id } = await req.json();
+    const body = await readJSON(req);
+    if (!body) {
+        return invalidBodyResponse();
+    }
+    const { title, caseValue, pcb, plate, switches, keycaps, mods, stabs, youtube_link, build_id } = body;
 
     // ensure user is authenticated
     const session = await getServerSession(authOptions);

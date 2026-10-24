@@ -53,7 +53,9 @@ export function EditBuildForm({ build }: { build: BuildIF }) {
             const buildId = data.buildId;
 
             showToast('Successfully updated build', {}, 'success');
+            // the client router cache still has the old build page, refresh so it re-renders with the edit
             router.push(`/builds/${buildId}`);
+            router.refresh();
         } else {
             showToast(data.error, {}, 'error');
         }
