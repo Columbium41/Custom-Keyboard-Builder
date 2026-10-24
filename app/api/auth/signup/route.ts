@@ -3,6 +3,7 @@ import {prisma} from "@/lib/prisma";
 import {NextRequest} from "next/server";
 import jwt from "jsonwebtoken";
 import {sendEmailVerification} from "@/mailer/emailVerification";
+import {getUsernameErrors} from "@/lib/user";
 
 export async function POST(req: NextRequest) {
     const { username, email, password, passwordConfirmation } = await req.json();
@@ -16,18 +17,12 @@ export async function POST(req: NextRequest) {
         });
     }
 
-    // check that username & password are minimum lengths
-    if (username.length < 6 || username.length > 30) {
-        errors += "Username must be between 6-30 characters\n";
-    }
+    // check username length & characters
+    errors += getUsernameErrors(username);
+
+    // check that password is minimum length
     if (password.length < 8 || password.length > 40) {
         errors += "Password must be between 8-40 characters\n";
-    }
-
-    // check that username is only alphanumerical characters and spaces
-    const regex = /^[a-zA-Z0-9\s]+$/;
-    if (!regex.test(username)) {
-        errors += "Username can only contain alphanumerical characters and spaces";
     }
 
     // check that password matches password confirmation
@@ -47,7 +42,7 @@ export async function POST(req: NextRequest) {
         const existingUser = await prisma.user.findFirst({
             where: {
                 OR: [
-                    { email: email },
+                    { email: { equals: email, mode: 'insensitive' } },
                     { username: username }
                 ],
             },

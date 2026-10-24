@@ -17,8 +17,8 @@ datasource db {
 model User {
   id          Int       @id @default(autoincrement())
   email       String    @unique
-  password    String
-  username    String    @unique @db.VarChar(255)
+  password    String? // null for google-only accounts
+  username    String?   @unique @db.VarChar(255) // null until onboarding is completed
   description String?
   verified    Boolean   @default(false)
   lastLogin   DateTime?
@@ -29,6 +29,20 @@ model User {
   builds   Build[]
   likes    Like[]
   comments Comment[]
+  accounts Account[]
+}
+
+// oauth identities linked to a user
+model Account {
+  account_id        Int      @id @default(autoincrement())
+  provider          String
+  providerAccountId String
+  createdAt         DateTime @default(now())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
 }
 
 model Build {

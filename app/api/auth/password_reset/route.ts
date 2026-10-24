@@ -29,6 +29,12 @@ export async function POST(req: NextRequest) {
                 return new Response(JSON.stringify({ error: 'Invalid or expired token' }), {
                     status: 400,
                 });
+            }
+            // google-only account
+            else if (!user.password) {
+                return new Response(JSON.stringify({ error: 'This account uses Google sign-in and does not have a password' }), {
+                    status: 400,
+                });
             } else {
                 return new Response(JSON.stringify({ message: 'Token is valid' }), {
                     status: 200,
@@ -74,6 +80,12 @@ export async function PATCH(req: NextRequest) {
 
             if (!user) {
                 return new Response(JSON.stringify({ error: 'Invalid or expired token' }), {
+                    status: 400,
+                });
+            }
+            // google-only account
+            else if (!user.password) {
+                return new Response(JSON.stringify({ error: 'This account uses Google sign-in and does not have a password' }), {
                     status: 400,
                 });
             } else {

@@ -48,7 +48,7 @@ export function BuildCard({ build, liked }: { build : BuildIF, liked?: boolean }
                             <Avatar src={build.user.avatar.fileURL} size="sm" />
                         }
                         <Link
-                            href={`/users/${encodeURIComponent(build.user.username)}`}
+                            href={`/users/${encodeURIComponent(build.user.username || '')}`}
                             className="!text-blue-400 hover:!underline"
                         >{ build.user.username }</Link>
                     </div>

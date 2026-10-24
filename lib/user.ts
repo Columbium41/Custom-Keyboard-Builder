@@ -5,7 +5,7 @@ import {BuildIF} from "@/lib/build";
 export interface UserIF {
     id: number;
     email: string;
-    username: string;
+    username: string | null;
     verified: boolean;
     description: string | null;
     lastLogin: Date | null;
@@ -60,4 +60,22 @@ export async function getUserData(username: string) {
     });
 
     return user;
+}
+
+// returns a newline separated list of problems with the username, or an empty string if valid
+export function getUsernameErrors(username: string) {
+    let errors = '';
+
+    // check that username is minimum length
+    if (username.length < 6 || username.length > 30) {
+        errors += "Username must be between 6-30 characters\n";
+    }
+
+    // check that username is only alphanumerical characters and spaces
+    const regex = /^[a-zA-Z0-9\s]+$/;
+    if (!regex.test(username)) {
+        errors += "Username can only contain alphanumerical characters and spaces\n";
+    }
+
+    return errors;
 }

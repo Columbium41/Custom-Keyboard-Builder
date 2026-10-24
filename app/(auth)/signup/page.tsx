@@ -6,6 +6,7 @@ import {useToastContext} from "@/components/providers/ToastProvider";
 import {useCaptcha} from "@/components/providers/CaptchaProvider";
 import GoogleReCAPTCHA from "@/components/GoogleReCAPTCHA/GoogleReCAPTCHA";
 import {Button} from "@chakra-ui/react";
+import GoogleSignInButton, {OrDivider} from "@/components/GoogleSignInButton/GoogleSignInButton";
 
 export default function SignupPage() {
     const [email, setEmail] = useState('');
@@ -124,6 +125,11 @@ export default function SignupPage() {
                         Sign Up
                     </Button>
                 </form>
+
+                <OrDivider />
+                <div className="flex flex-col">
+                    <GoogleSignInButton />
+                </div>
             </div>
         </div>
     )

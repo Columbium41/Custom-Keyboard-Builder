@@ -1,18 +1,36 @@
 'use client';
 
-import {useState} from "react";
-import {useRouter} from "next/navigation";
+import {useEffect, useState} from "react";
+import {useRouter, useSearchParams} from "next/navigation";
 import {signIn} from "next-auth/react";
 import {useToastContext} from "@/components/providers/ToastProvider";
 import Link from "next/link";
 import {Button} from "@chakra-ui/react";
+import GoogleSignInButton, {OrDivider} from "@/components/GoogleSignInButton/GoogleSignInButton";
+
+// errors next-auth sends back as ?error= after an oauth sign in
+const oauthErrorMessages: Record<string, string> = {
+    GoogleEmailUnverified: 'Your Google account email is not verified',
+    GoogleSignInFailed: 'Google sign in failed, please try again later',
+};
 
 export default function SignInPage() {
     const [usernameOrEmail, setUsernameOrEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
-    const { showToastPromise } = useToastContext();
+    const searchParams = useSearchParams();
+    const { showToast, showToastPromise } = useToastContext();
+
+    // show oauth sign in errors
+    useEffect(() => {
+        const error = searchParams.get('error');
+
+        if (error) {
+            showToast(oauthErrorMessages[error] || 'Sign in failed, please try again', {}, 'error');
+            router.replace('/signin');
+        }
+    }, [searchParams]);
 
     const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -78,6 +96,11 @@ export default function SignInPage() {
                         Login
                     </Button>
                 </form>
+
+                <OrDivider />
+                <div className="flex flex-col mb-4">
+                    <GoogleSignInButton />
+                </div>
 
                 <Link href="/verify_email" className="block text-blue-400 underline underline-offset-2 hover:brightness-75 transition duration-300 mb-1">Re-send email verification</Link>
                 <Link href="/password_reset" className="block text-blue-400 underline underline-offset-2 hover:brightness-75 transition duration-300">Forgot your password</Link>

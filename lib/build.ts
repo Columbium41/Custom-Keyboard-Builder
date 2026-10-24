@@ -16,7 +16,7 @@ export interface BuildIF {
     updatedAt: Date,
     photos: Photo[],
     user: {
-        username: string,
+        username: string | null,
         avatar: Photo | null,
     },
     likes: Like[],

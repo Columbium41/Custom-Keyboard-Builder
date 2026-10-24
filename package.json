@@ -2,6 +2,9 @@
   "name": "mech-forum",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "prisma migrate deploy && prisma generate && next build",
@@ -50,5 +53,12 @@
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5"
+  },
+  "allowScripts": {
+    "@prisma/client@5.14.0": true,
+    "@prisma/engines@5.14.0": true,
+    "bcrypt@5.1.1": true,
+    "fsevents@2.3.3": true,
+    "prisma@5.14.0": true
   }
 }
