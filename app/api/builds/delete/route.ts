@@ -26,28 +26,33 @@ export async function DELETE(req: NextRequest) {
     } else if (Number(session.user.id) !== build.userId) {
         return new Response(JSON.stringify({ error: "Incorrect Permissions" }), { status: 400 });
     } else {
-        // delete s3 photos
         const photos = await prisma.photo.findMany({
             where: {
                 buildId: buildId,
             },
         });
 
-        for (let i = 0; i < photos.length; i++) {
-            const photo = photos[i];
-            const deleteObjectCommand = new DeleteObjectCommand({
-                Bucket: process.env.AWS_BUCKET_NAME!,
-                Key: photo.fileURL.split("/").pop()!,
+        // delete build first, photos, likes and comments cascade
+        try {
+            await prisma.build.delete({
+                where: {
+                    build_id: buildId,
+                },
             });
-
-            await s3.send(deleteObjectCommand)
+        } catch (error) {
+            return new Response(JSON.stringify({ error: "Failed to delete build" }), { status: 500 });
         }
 
-        // delete build
-        await prisma.build.delete({
-            where: {
-                build_id: buildId,
-            },
+        // then delete s3 photos, a failure only leaves an orphaned file so don't fail the request
+        const results = await Promise.allSettled(photos.map((photo) => s3.send(new DeleteObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME!,
+            Key: photo.fileURL.split("/").pop()!,
+        }))));
+
+        results.forEach((result, i) => {
+            if (result.status === "rejected") {
+                console.error(`Failed to delete s3 object for photo ${photos[i].photo_id}`, result.reason);
+            }
         });
 
         return new Response(JSON.stringify({ message: "OK" }), { status: 200 });

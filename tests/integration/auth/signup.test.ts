@@ -15,6 +15,7 @@ const validBody = {
     email: "new@example.com",
     password: "password123",
     passwordConfirmation: "password123",
+    captchaToken: "captcha-token",
 };
 
 describe("POST /api/auth/signup", () => {

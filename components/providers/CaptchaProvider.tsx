@@ -1,10 +1,13 @@
 'use client';
 
-import React, {createContext, useContext, useState} from 'react';
+import React, {createContext, RefObject, useCallback, useContext, useRef, useState} from 'react';
+import ReCAPTCHA from "react-google-recaptcha";
 
 interface CaptchaContextType {
-    isCaptchaVerified: boolean,
-    setIsCaptchaVerified: (isCaptchaVerified: boolean) => void,
+    captchaToken: string | null,
+    setCaptchaToken: (captchaToken: string | null) => void,
+    recaptchaRef: RefObject<ReCAPTCHA>,
+    resetCaptcha: () => void,
 }
 
 type Props = {
@@ -14,10 +17,17 @@ type Props = {
 const CaptchaContext = createContext<CaptchaContextType | undefined>(undefined);
 
 export function CaptchaProvider({ children }: Props) {
-    const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
+    const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+    const recaptchaRef = useRef<ReCAPTCHA>(null);
+
+    // tokens are single use, so clear the widget after every submit
+    const resetCaptcha = useCallback(() => {
+        recaptchaRef.current?.reset();
+        setCaptchaToken(null);
+    }, []);
 
     return (
-        <CaptchaContext.Provider value={{ isCaptchaVerified, setIsCaptchaVerified }}>
+        <CaptchaContext.Provider value={{ captchaToken, setCaptchaToken, recaptchaRef, resetCaptcha }}>
             {children}
         </CaptchaContext.Provider>
     );

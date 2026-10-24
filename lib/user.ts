@@ -4,11 +4,8 @@ import {BuildIF} from "@/lib/build";
 
 export interface UserIF {
     id: number;
-    email: string;
     username: string | null;
-    verified: boolean;
     description: string | null;
-    lastLogin: Date | null;
     createdAt: Date;
     updatedAt: Date;
     avatar: Photo | null;
@@ -16,6 +13,7 @@ export interface UserIF {
     likes: Like[];
 }
 
+// this is passed to client components, so only select fields that are safe to show anyone
 export async function getUserData(username: string) {
     const user = await prisma.user.findUnique({
         where: {
@@ -23,11 +21,8 @@ export async function getUserData(username: string) {
         },
         select: {
             id: true,
-            email: true,
             username: true,
-            verified: true,
             description: true,
-            lastLogin: true,
             createdAt: true,
             updatedAt: true,
             avatar: true,

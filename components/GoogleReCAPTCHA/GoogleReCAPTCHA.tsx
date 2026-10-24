@@ -1,26 +1,18 @@
 'use client';
 
 import ReCAPTCHA from "react-google-recaptcha";
-import {useRef} from "react";
-import {verifyCaptcha} from "@/actions/recaptcha";
 import {useCaptcha} from "@/components/providers/CaptchaProvider";
 
 export default function GoogleReCAPTCHA({ className }: { className?: string }) {
-    const recaptchaRef = useRef<ReCAPTCHA>(null);
-    const { setIsCaptchaVerified } = useCaptcha();
+    const { recaptchaRef, setCaptchaToken } = useCaptcha();
 
-    // recaptcha action
-    const handleCaptchaSubmission = async (token: string | null) => {
-        await verifyCaptcha(token)
-            .then(() => setIsCaptchaVerified(true))
-            .catch(() => setIsCaptchaVerified(false));
-    };
-
+    // keep the token for the form to send, the server verifies it
+    // onChange gets null when the token expires
     return (
         <ReCAPTCHA
             sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITEKEY || ''}
             ref={recaptchaRef}
-            onChange={handleCaptchaSubmission}
+            onChange={setCaptchaToken}
             className={className}
         />
     )

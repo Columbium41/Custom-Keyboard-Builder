@@ -1,13 +1,18 @@
 import {prisma} from "@/lib/prisma";
 import {NextRequest} from "next/server";
 import jwt from "jsonwebtoken";
+import {captchaFailedResponse, verifyCaptcha} from "@/lib/recaptcha";
 import {sendEmailVerification} from "@/mailer/emailVerification";
 
 const EMAIL_SECRET = process.env.EMAIL_SECRET as string;
 
 // Re-send email verification token
 export async function POST(req: NextRequest) {
-    const { email } = await req.json();
+    const { email, captchaToken } = await req.json();
+
+    if (!(await verifyCaptcha(captchaToken))) {
+        return captchaFailedResponse();
+    }
 
     const user = await prisma.user.findUnique({
         where: { email: email },

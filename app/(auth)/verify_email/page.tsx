@@ -14,7 +14,7 @@ export default function VerifyEmailPage() {
     const { showToast } = useToastContext();
     const token = searchParams.get('token');
     const [email, setEmail] = useState('');
-    const { isCaptchaVerified } = useCaptcha();
+    const { captchaToken, resetCaptcha } = useCaptcha();
     const [isLoading, setIsLoading] = useState(false);
 
     // validate token if present
@@ -46,7 +46,7 @@ export default function VerifyEmailPage() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!isCaptchaVerified) {
+        if (!captchaToken) {
             alert('Please verify the captcha');
             return;
         }
@@ -59,10 +59,11 @@ export default function VerifyEmailPage() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email }),
+            body: JSON.stringify({ email, captchaToken }),
         });
 
         const data = await res.json();
+        resetCaptcha();
 
         toast.dismiss(loadingToast);
         if (res.ok) {

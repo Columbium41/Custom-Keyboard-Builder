@@ -1,4 +1,4 @@
-import {describe, expect, it} from "vitest";
+import {describe, expect, it, vi} from "vitest";
 import {DeleteObjectCommand} from "@aws-sdk/client-s3";
 import {DELETE} from "@/app/api/builds/delete/route";
 import {prisma} from "@/lib/prisma";
@@ -29,6 +29,42 @@ describe("DELETE /api/builds/delete", () => {
 
         const deletedKeys = s3Mock.commandCalls(DeleteObjectCommand).map((call) => call.args[0].input.Key);
         expect(deletedKeys.sort()).toEqual([thumbnail.filename, photo.filename].sort());
+    });
+
+    it("still deletes the build when s3 fails, and tries every photo", async () => {
+        const owner = await createUser();
+        const build = await createBuild(owner.id);
+        const thumbnail = await createBuildPhoto(build.build_id, { isThumbnail: true });
+        const photo = await createBuildPhoto(build.build_id);
+        s3Mock.on(DeleteObjectCommand, { Key: thumbnail.filename }).rejects(new Error("s3 is down"));
+        const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+        signInAs(owner);
+
+        const { status, body } = await deleteBuild(build.build_id);
+        expect(status).toBe(200);
+        expect(body.message).toBe("OK");
+        expect(await prisma.build.count()).toBe(0);
+        expect(await prisma.photo.count()).toBe(0);
+
+        const deletedKeys = s3Mock.commandCalls(DeleteObjectCommand).map((call) => call.args[0].input.Key);
+        expect(deletedKeys.sort()).toEqual([thumbnail.filename, photo.filename].sort());
+        expect(consoleError).toHaveBeenCalledTimes(1);
+        consoleError.mockRestore();
+    });
+
+    it("leaves s3 alone and returns json when the database delete fails", async () => {
+        const owner = await createUser();
+        const build = await createBuild(owner.id);
+        await createBuildPhoto(build.build_id);
+        const buildDelete = vi.spyOn(prisma.build, "delete").mockRejectedValueOnce(new Error("db is down"));
+        signInAs(owner);
+
+        const { status, body } = await deleteBuild(build.build_id);
+        expect(status).toBe(500);
+        expect(body.error).toBe("Failed to delete build");
+        expect(await prisma.build.count()).toBe(1);
+        expect(s3Mock.commandCalls(DeleteObjectCommand)).toHaveLength(0);
+        buildDelete.mockRestore();
     });
 
     it("refuses to delete another user's build", async () => {

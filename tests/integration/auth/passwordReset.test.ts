@@ -15,7 +15,7 @@ const resetToken = (userId: number, options: jwt.SignOptions = { expiresIn: "1h"
 
 describe("POST /api/auth/send_password_reset", () => {
     const send = async (email: string) =>
-        readResponse(await sendReset(jsonRequest("POST", "/api/auth/send_password_reset", { email })));
+        readResponse(await sendReset(jsonRequest("POST", "/api/auth/send_password_reset", { email, captchaToken: "captcha-token" })));
 
     it("emails a reset token", async () => {
         const user = await createUser();

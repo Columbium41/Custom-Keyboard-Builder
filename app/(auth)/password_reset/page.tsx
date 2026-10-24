@@ -17,7 +17,7 @@ export default function PasswordResetPage() {
     const [newPassword, setNewPassword] = useState('');
     const [passwordConfirmation, setPasswordConfirmation] = useState('');
     const [tokenValid, setTokenValid] = useState<boolean | null>(null);
-    const { isCaptchaVerified } = useCaptcha();
+    const { captchaToken, resetCaptcha } = useCaptcha();
     const [isLoading, setIsLoading] = useState(false);
 
     // validate URL token if present
@@ -52,7 +52,7 @@ export default function PasswordResetPage() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!isCaptchaVerified) {
+        if (!captchaToken) {
             alert('Please verify the captcha');
             return;
         }
@@ -65,10 +65,11 @@ export default function PasswordResetPage() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email }),
+            body: JSON.stringify({ email, captchaToken }),
         });
 
         const data = await res.json();
+        resetCaptcha();
 
         toast.dismiss(loadingToast);
         if (res.ok) {

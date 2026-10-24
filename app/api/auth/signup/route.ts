@@ -4,9 +4,15 @@ import {NextRequest} from "next/server";
 import jwt from "jsonwebtoken";
 import {sendEmailVerification} from "@/mailer/emailVerification";
 import {getUsernameErrors} from "@/lib/user";
+import {captchaFailedResponse, verifyCaptcha} from "@/lib/recaptcha";
 
 export async function POST(req: NextRequest) {
-    const { username, email, password, passwordConfirmation } = await req.json();
+    const { username, email, password, passwordConfirmation, captchaToken } = await req.json();
+
+    // check the captcha before anything else
+    if (!(await verifyCaptcha(captchaToken))) {
+        return captchaFailedResponse();
+    }
 
     let errors = '';
 

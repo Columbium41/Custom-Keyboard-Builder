@@ -15,14 +15,14 @@ export default function SignupPage() {
     const [username , setUsername] = useState('');
     const router = useRouter();
     const { showToastPromise } = useToastContext();
-    const { isCaptchaVerified } = useCaptcha();
+    const { captchaToken, resetCaptcha } = useCaptcha();
     const [isLoading, setIsLoading] = useState(false);
 
     // submit form
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!isCaptchaVerified) {
+        if (!captchaToken) {
             alert('Please verify the captcha');
             return;
         }
@@ -35,10 +35,11 @@ export default function SignupPage() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, email, password, passwordConfirmation }),
+                body: JSON.stringify({ username, email, password, passwordConfirmation, captchaToken }),
             });
 
             const data = await res.json();
+            resetCaptcha();
 
             if (data.error) {
                 reject(data.error);

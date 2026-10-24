@@ -1,4 +1,5 @@
 import {afterAll, beforeEach, vi} from "vitest";
+import axios from "axios";
 import {prisma} from "@/lib/prisma";
 import {truncateAllTables} from "./db";
 import {signOut} from "../helpers/session";
@@ -31,6 +32,8 @@ vi.mock("axios", () => {
 beforeEach(async () => {
     await truncateAllTables(prisma);
     vi.clearAllMocks();
+    // recaptcha passes unless a test says otherwise
+    vi.mocked(axios.post).mockResolvedValue({ data: { success: true } });
     signOut();
     s3Mock.reset();
 });

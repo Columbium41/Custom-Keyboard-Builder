@@ -49,7 +49,7 @@ describe("POST /api/auth/verify_email", () => {
 
 describe("POST /api/auth/send_email_verification", () => {
     const resend = async (email: string) =>
-        readResponse(await sendVerification(jsonRequest("POST", "/api/auth/send_email_verification", { email })));
+        readResponse(await sendVerification(jsonRequest("POST", "/api/auth/send_email_verification", { email, captchaToken: "captcha-token" })));
 
     it("re-sends a verification email to an unverified user", async () => {
         const user = await createUser({ verified: false });
