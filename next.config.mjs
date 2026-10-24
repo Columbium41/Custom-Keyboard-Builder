@@ -2,6 +2,8 @@
 import withSvgr from '@svgr/webpack';
 
 const nextConfig = {
+    // e2e tests build into their own directory so they don't clobber a running dev server
+    distDir: process.env.NEXT_DIST_DIR || '.next',
     webpack(config) {
         config.module.rules.push({
             test: /\.svg$/,

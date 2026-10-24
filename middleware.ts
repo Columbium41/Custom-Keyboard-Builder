@@ -46,6 +46,11 @@ export default async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL('/signin', req.url));
     }
 
+    // e2e tests make more requests than the limit allows (set in playwright.config.ts only)
+    if (process.env.DISABLE_RATE_LIMIT === "true") {
+        return NextResponse.next();
+    }
+
     const { success } = rateLimiter(req);
 
     return success ? NextResponse.next() : NextResponse.redirect(new URL('/blocked', req.url))
