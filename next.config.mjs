@@ -18,12 +18,13 @@ const nextConfig = {
         return config;
     },
     images: {
-        remotePatterns: [
+        // skipped when the bucket isn't configured (e.g. ci lint), next rejects an undefined hostname
+        remotePatterns: process.env.AWS_BUCKET_URL ? [
             {
                 protocol: "https",
                 hostname: process.env.AWS_BUCKET_URL,
             }
-        ]
+        ] : []
     }
 };
 
