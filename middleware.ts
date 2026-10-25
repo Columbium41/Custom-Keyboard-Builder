@@ -9,6 +9,8 @@ const rateLimiter = rateLimitMiddleware({
 
 const COMPLETE_PROFILE_PAGE = "/complete_profile";
 const COMPLETE_PROFILE_API = "/api/users/complete_profile";
+// readable by anyone, including users who haven't chosen a username yet
+const LEGAL_PAGES = ["/privacy", "/terms"];
 
 export const config = {
     matcher: [
@@ -27,7 +29,7 @@ export default async function middleware(req: NextRequest) {
 
     if (needsUsername && pathname.startsWith("/api") && pathname !== COMPLETE_PROFILE_API) {
         return new NextResponse(JSON.stringify({ error: 'Please choose a username first' }), { status: 403 });
-    } else if (needsUsername && !pathname.startsWith("/api") && pathname !== COMPLETE_PROFILE_PAGE) {
+    } else if (needsUsername && !pathname.startsWith("/api") && pathname !== COMPLETE_PROFILE_PAGE && !LEGAL_PAGES.includes(pathname)) {
         return NextResponse.redirect(new URL(COMPLETE_PROFILE_PAGE, req.url));
     } else if (!needsUsername && pathname === COMPLETE_PROFILE_PAGE) {
         return NextResponse.redirect(new URL(isAuthenticated ? '/' : '/signin', req.url));

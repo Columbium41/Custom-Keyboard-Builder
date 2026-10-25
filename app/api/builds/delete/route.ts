@@ -2,8 +2,7 @@ import {NextRequest} from "next/server";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/api/auth/[...nextauth]/_authOptions";
 import {prisma} from "@/lib/prisma";
-import {DeleteObjectCommand} from "@aws-sdk/client-s3";
-import s3 from "@/lib/s3client";
+import {deleteS3Objects} from "@/lib/s3client";
 import {invalidBodyResponse, readJSON} from "@/lib/request";
 
 export async function DELETE(req: NextRequest) {
@@ -49,16 +48,7 @@ export async function DELETE(req: NextRequest) {
         }
 
         // then delete s3 photos, a failure only leaves an orphaned file so don't fail the request
-        const results = await Promise.allSettled(photos.map((photo) => s3.send(new DeleteObjectCommand({
-            Bucket: process.env.AWS_BUCKET_NAME!,
-            Key: photo.fileURL.split("/").pop()!,
-        }))));
-
-        results.forEach((result, i) => {
-            if (result.status === "rejected") {
-                console.error(`Failed to delete s3 object for photo ${photos[i].photo_id}`, result.reason);
-            }
-        });
+        await deleteS3Objects(photos.map((photo) => photo.fileURL));
 
         return new Response(JSON.stringify({ message: "OK" }), { status: 200 });
     }

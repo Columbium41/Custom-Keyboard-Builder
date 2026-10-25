@@ -5,6 +5,7 @@ import {useRouter} from "next/navigation";
 import {useSession} from "next-auth/react";
 import {useToastContext} from "@/components/providers/ToastProvider";
 import {Button} from "@chakra-ui/react";
+import {AgreementNotice} from "@/components/LegalPage/LegalPage";
 
 // shown to oauth users until they choose a username (enforced in middleware.ts)
 export default function CompleteProfilePage() {
@@ -77,6 +78,7 @@ export default function CompleteProfilePage() {
                             Continue
                         </Button>
                     </form>
+                    <AgreementNotice action="continuing" className="mt-3" />
                 </div>
             </div>
         </div>

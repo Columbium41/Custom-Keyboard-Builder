@@ -11,6 +11,7 @@ import {DELETE as deleteBuild} from "@/app/api/builds/delete/route";
 import {POST as likeBuild} from "@/app/api/builds/like/route";
 import {PATCH as updateDescription} from "@/app/api/users/update_description/route";
 import {POST as completeProfile} from "@/app/api/users/complete_profile/route";
+import {DELETE as deleteAccount} from "@/app/api/users/delete_account/route";
 import {readResponse} from "../helpers/request";
 import {createUser} from "../helpers/factories";
 import {signInAs} from "../helpers/session";
@@ -36,6 +37,7 @@ const routes: [string, string, (req: NextRequest) => Promise<Response>][] = [
     ["POST", "/api/builds/like", likeBuild],
     ["PATCH", "/api/users/update_description", updateDescription],
     ["POST", "/api/users/complete_profile", completeProfile],
+    ["DELETE", "/api/users/delete_account", deleteAccount],
 ];
 
 const badBodies: [string, string | undefined][] = [

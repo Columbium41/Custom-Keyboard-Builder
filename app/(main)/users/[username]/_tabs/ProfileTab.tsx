@@ -5,6 +5,7 @@ import UploadSinglePhoto from "@/components/UploadSinglePhoto/UploadSinglePhoto"
 import {UserIF} from "@/lib/user";
 import {Dispatch, SetStateAction, useState} from "react";
 import {useToastContext} from "@/components/providers/ToastProvider";
+import DeleteAccount from "@/app/(main)/users/[username]/_DeleteAccount";
 
 export default function ProfileTab({
     user,
@@ -105,6 +106,9 @@ export default function ProfileTab({
                         <UploadSinglePhoto />
                     </div>)
                 }
+
+                {/* Delete Account */}
+                { currentUser && user.username && <DeleteAccount username={user.username} /> }
             </div>
         </div>
     )

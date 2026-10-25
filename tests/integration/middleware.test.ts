@@ -29,7 +29,7 @@ describe("middleware: authentication", () => {
         expect(redirectPath(res)).toBe("/signin");
     });
 
-    it.each(["/", "/builds", "/signin"])("lets signed out users view %s", async (path) => {
+    it.each(["/", "/builds", "/signin", "/privacy", "/terms"])("lets signed out users view %s", async (path) => {
         const res = await request(path, { signedIn: false });
         expect(redirectPath(res)).toBeNull();
     });
@@ -44,6 +44,11 @@ describe("middleware: username onboarding", () => {
     it.each(["/", "/builds", "/users/someone", "/builds/new"])("redirects users without a username from %s to /complete_profile", async (path) => {
         const res = await request(path, { name: null });
         expect(redirectPath(res)).toBe("/complete_profile");
+    });
+
+    it.each(["/privacy", "/terms"])("lets users without a username read %s", async (path) => {
+        const res = await request(path, { name: null });
+        expect(redirectPath(res)).toBeNull();
     });
 
     it("lets users without a username view /complete_profile", async () => {

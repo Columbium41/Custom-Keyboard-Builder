@@ -7,6 +7,7 @@ import {useCaptcha} from "@/components/providers/CaptchaProvider";
 import GoogleReCAPTCHA from "@/components/GoogleReCAPTCHA/GoogleReCAPTCHA";
 import {Button} from "@chakra-ui/react";
 import GoogleSignInButton, {OrDivider} from "@/components/GoogleSignInButton/GoogleSignInButton";
+import {AgreementNotice} from "@/components/LegalPage/LegalPage";
 
 export default function SignupPage() {
     const [email, setEmail] = useState('');
@@ -126,6 +127,7 @@ export default function SignupPage() {
                         Sign Up
                     </Button>
                 </form>
+                <AgreementNotice action="signing up" className="mt-3" />
 
                 <OrDivider />
                 <div className="flex flex-col">

@@ -28,3 +28,6 @@ build and configure their own custom keyboards and share them with other users.
 - [Prisma](https://www.prisma.io/) (ORM)
 - [Supabase](https://supabase.com/) (Database Hosting)
 - [AWS S3](https://aws.amazon.com/s3/) (Media Storage)
+
+## Docs
+- [Publishing Google sign-in to production](docs/google-oauth-production.md), including the privacy policy and terms of service pages
