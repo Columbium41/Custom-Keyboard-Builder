@@ -11,6 +11,10 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
     title: "MechForum",
     description: "A web application that allows users to build their own custom keyboards and share them with other people",
+    // google search console ownership check, needed to verify the oauth consent screen's home page
+    verification: {
+        google: process.env.GOOGLE_SITE_VERIFICATION,
+    },
 };
 
 export default function RootLayout({
